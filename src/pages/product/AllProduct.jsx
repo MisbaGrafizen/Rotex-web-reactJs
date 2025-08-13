@@ -108,7 +108,7 @@ const onCardClick =()=>{
                     <div className=" w-[100%]">
 
 
-                        <h2 className="text-3xl font-[600] text-gray-800 mb-5">Smart Fan Highlights</h2>
+                        <h2 className="text-3xl font-[600] text-gray-800 mb-5">Designer Fans</h2>
 
 
                         <div className="relative">
@@ -175,7 +175,7 @@ const onCardClick =()=>{
                     <div className=" w-[100%]">
 
 
-                        <h2 className="text-3xl font-[600] text-gray-800 mb-5">Smart Fan Highlights</h2>
+                        <h2 className="text-3xl font-[600] text-gray-800 mb-5">Industrial Fans</h2>
 
 
                         <div className="relative">

@@ -95,11 +95,12 @@ const products = [
 
 
 const tabs = [
-  "New In",
-  "Air Conditioner",
-  "Washing Machine",
-  "Refrigerator",
-  "LED Television",
+  "All",
+  "Designer Fans",
+  "Wooden Fans",
+  "Industrial Fans",
+  "Afforadable Fans",
+  "Fans for Small Space",
 ];
 
 // export default function MainProduct() {
@@ -328,12 +329,12 @@ const navigate =useNavigate()
     navigate("/all-products")
   }
   return (
-    <section className="w-[90%] mx-auto">
+    <section className="w-[90%] mx-auto pb-[100px]">
       <div className="mx-auto px-4">
         <h2 className="text-3xl font-[600] text-gray-800 mb-5">Smart Fan Highlights</h2>
 
         <div className="mb-4 -mx-1">
-          <div className="flex gap-1 overflow-x-auto no-scrollbar px-1">
+          <div className="flex gap-1 no-scrollbar px-1">
             {tabs.map((t) => {
               const active = t === activeTab;
               return (
@@ -341,7 +342,7 @@ const navigate =useNavigate()
                   key={t}
                   onClick={() => setActiveTab(t)}
                   className={[
-                    "shrink-0 rounded-[999px] mb-[2px] px-[10px] py-1 text-[12px] font-[500]  transition-all",
+                    "shrink-0 rounded-[999px] mb-[2px] px-[10px] min- py-1 text-[12px] font-[500]  transition-all",
                     "",
                     active
                       ? "bg-[#a0a0a057]  text-[#111] font-[500] ring-1 ring-black/5"

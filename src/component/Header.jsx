@@ -1,6 +1,7 @@
 
 import { useState } from "react"
 import logo from "../../public/images/Logo/moveLogo.gif"
+import LoginDrawer from "../component/LoginDrawer";
 
 const megaMenuData = {
     "Search by Category": {
@@ -64,6 +65,8 @@ const megaMenuData = {
 export default function Header() {
     const [activeDropdown, setActiveDropdown] = useState(null)
     const [selectedPage, setSelectedPage] = useState("New Products")
+      const [loginOpen, setLoginOpen] = useState(false);
+
 
     return (
         <header className="fixed top-0 pl-[60px] font-Poppins flex flex-col w-[100%] h-[90px] shadow-xl left-0 right-0 z-50 bg-[#fafafa]">
@@ -151,12 +154,12 @@ export default function Header() {
                                     </div>
                                 </div>
 
-                                <button className="flex items-center  flex-shrink-0  min-w-[100px] space-x-1 text-gray-700 hover:text-[#025da8] transition-colors duration-200 text-[12px] font-[500]">
+                                {/* <button className="flex items-center  flex-shrink-0  min-w-[100px] space-x-1 text-gray-700 hover:text-[#025da8] transition-colors duration-200 text-[12px] font-[500]">
                                     <span>See Our Brands</span>
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                     </svg>
-                                </button>
+                                </button> */}
 
                                 <button className="flex  flex-shrink-0  items-center space-x-1 text-gray-700 hover:text-[#025da8] transition-colors duration-200 text-[12px] font-[500]">
                                     <span>Support</span>
@@ -173,19 +176,27 @@ export default function Header() {
                                     <i className="fa-regular text-[20px] fa-cart-shopping"></i>
                                 </button>
 
-                                <button className="text-gray-700 hover:text-[#025da8] transition-colors duration-200 px-[2px] py-[10px]">
+                                <button className="text-gray-700 hover:text-[#025da8] transition-colors duration-200 px-[2px] py-[10px]" onClick={() => setLoginOpen(true)}
+                    aria-label="Open login">
                         <i className=" text-[20px] fa-regular fa-user"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-
+     <LoginDrawer
+        open={loginOpen}
+        onClose={() => setLoginOpen(false)}
+        onSuccess={(user) => {
+          // optional: set global user, toast, etc.
+          console.log("Logged in:", user);
+        }}
+      /> 
                     {/* Secondary Navigation */}
                     <div className="">
                         <div className=" mx-auto px-2 py-[2px]">
                             <div className="flex items-center space-x-5 h-[35px]">
-                                {["New Products", "Best Seller", "Register Product", "Buy AMC", "Loyalty"].map((page) => (
+                                {["New Products", "Best Seller", "Register Warranty", "Loyalty" ].map((page) => (
                                     <a
                                         key={page}
                                         href="#"
