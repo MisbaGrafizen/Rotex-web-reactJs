@@ -34,18 +34,15 @@ function App() {
 
   return (
     <>
-  
+
       <div className="w-100 ease-soft-spring h-[100%]  !bg-[#fbffff]  duration-1000 ">
 
-<ScrollToTop />
+        <ScrollToTop />
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path ="/all-products" element={<AllProduct />} />
-          <Route path ="/productdetails" element={<Productdetails />} />
-
-          
-          
+          <Route path="/all-products" element={<AllProduct />} />
+          <Route path="/product-details/:title" element={<Productdetails />} />
 
 
 
@@ -57,10 +54,13 @@ function App() {
 
 
 
-     
 
 
-          
+
+
+
+
+
 
 
 

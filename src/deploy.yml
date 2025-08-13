@@ -1,0 +1,30 @@
+name: Deploy to RotexFans
+
+on:
+  push:
+    branches:
+      - main  # or your deploy branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build (adjust as needed)
+        run: |
+          npm install
+          npm run build
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ROTEX_DEPLOY_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy via SCP
+        run: |
+          scp -P ${{ secrets.SSH_PORT }} -r ./dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/u300909184/domains/rotexfans.com/public_html
