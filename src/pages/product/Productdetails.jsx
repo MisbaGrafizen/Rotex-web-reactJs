@@ -359,6 +359,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import Header from "../../component/Header";
 import { ApiGet } from "../../helper/axios";
+ import amaze1 from "../../../public/images/productDetails/amaze1.jpg"
+import CartDrawer from "../../component/otherFolder/CartDrawer";
 
 export default function Productdetails() {
   // -------- router inputs (either via route param or navigation state) -------
@@ -368,6 +370,18 @@ export default function Productdetails() {
   const nameFromState = location?.state?.name ?? "";
 
   const idOrSlug = idFromState || idOrSlugParam;
+  const [openCart, setOpenCart] = useState(false);
+  const [qty, setQty] = useState(1);
+
+  const product1 = {
+    id: "fan-001",
+    title: "Rotex Trio Modern BLDC Ceiling Fan – Sleek Style, Whisper-Quiet",
+    price: 3799,
+    image: amaze1,
+    colorName: "Matte Black",
+    colorHex: "#2B2B2B",
+    quantity: qty,
+  };
 
   // ----------------------------- local state ---------------------------------
   const [loading, setLoading] = useState(true);
@@ -520,26 +534,30 @@ export default function Productdetails() {
     );
   }
 
+
+
+  const addToCart = () => setOpenCart(true);
+
   return (
     <>
       <Header />
       <div className="min-h-screen font-Poppins pt-[110px]">
-        <div className="w-[90%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="w-[90%] mx-auto flex flex-col gap-[70px] px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* ---------------------- Image Gallery ---------------------- */}
-            <div className="space-y-4">
-              <div className="relative bg-white rounded-2xl border shadow-lg overflow-hidden group">
+            <div className="space-y-4 mx-auto">
+              <div className="relative bg-white rounded-2xl w-fit border shadow-lg overflow-hidden group">
                 <div className="min-h-[400px] h-[500px]">
                   <img
                     src={galleryImages[selectedImage] || "/placeholder.svg"}
                     alt={product?.title || "Product"}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    onClick={() => openImagePopup(selectedImage)}
+                    className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+                    // onClick={() => openImagePopup(selectedImage)}
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-6 gap-2">
+              <div className="grid max-w-[500px] grid-cols-6 gap-2">
                 {galleryImages.map((img, index) => (
                   <button
                     key={index}
@@ -689,7 +707,7 @@ export default function Productdetails() {
                 </div>
 
                 <div className="flex space-x-4">
-                  <button className="flex-1 bg-[#025da8] text-white py-2 px-8 rounded-lg font-semibold text-lg transition-colors">
+                  <button className="flex-1 bg-[#025da8] text-white py-2 px-8 rounded-lg font-semibold text-lg transition-colors"  onClick={addToCart}>
                     Add to Cart
                   </button>
                   <button className="px-2 py-2 border-2 border-[#025da8] text-[#025da8] rounded-lg hover:bg-red-50 transition-colors">
@@ -785,6 +803,16 @@ export default function Productdetails() {
           </div>
         )}
       </div>
+          <CartDrawer
+        open={openCart}
+        onClose={() => setOpenCart(false)}
+        lineItem={{ ...product1, quantity: qty }}
+        onQtyChange={setQty}
+        onProceed={() => {
+          // navigate("/checkout") or open your checkout drawer/page
+          console.log("Proceeding with:", { ...product1, quantity: qty });
+        }}
+      />
     </>
   );
 }

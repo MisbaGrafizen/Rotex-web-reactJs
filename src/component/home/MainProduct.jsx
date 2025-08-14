@@ -554,7 +554,7 @@ export default function MainProduct() {
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
-  const [products, setProducts] = useState(fallbackProducts);
+  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
   const px = (n) => Number(n ?? 0).toLocaleString("en-IN");
@@ -609,10 +609,9 @@ const normalizeProduct = (p) => {
         const res = await ApiGet("/products");
         console.log('res-product', res)
         const arr = Array.isArray(res?.data?.products) ? res.data?.products : res?.data?.products || [];
-        setProducts(arr.length ? arr.map(normalizeProduct) : fallbackProducts);
+        setProducts(arr.map(normalizeProduct) );
       } catch (e) {
         console.error("Fetch products failed:", e);
-        setProducts(fallbackProducts);
       }
     })();
   }, []);
