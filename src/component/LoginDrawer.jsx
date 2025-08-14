@@ -300,9 +300,265 @@
 //     </div>
 //   );
 // }
+// import { useEffect, useMemo, useRef, useState } from "react";
+// import FloatingInput from "../../src/component/otherFolder/FloatingInput";
+// import logo from "../../public/images/Logo/moveLogo.gif"
+
+// export default function LoginDrawer({ open, onClose, onSuccess }) {
+//   const [step, setStep] = useState("phone");
+//   const [phone, setPhone] = useState("");
+//   const [sending, setSending] = useState(false);
+
+//   const [otp, setOtp] = useState(Array(6).fill(""));
+//   const inputsRef = useRef([]);
+//   const [verifying, setVerifying] = useState(false);
+//   const [resendIn, setResendIn] = useState(0);
+
+//   const [name, setName] = useState("");
+//   const [email, setEmail] = useState("");
+
+//   const validPhone = useMemo(() => /^[6-9]\d{9}$/.test(phone.trim()), [phone]);
+//   const phoneError =
+//     phone.length > 0 && !validPhone ? "Enter a valid 10-digit Indian mobile number starting with 6–9." : "";
+
+//   useEffect(() => {
+//     if (!open) return;
+//     document.body.style.overflow = "hidden";
+//     return () => { document.body.style.overflow = ""; };
+//   }, [open]);
+
+//   useEffect(() => {
+//     if (open) {
+//       setStep("phone");
+//       setPhone("");
+//       setOtp(Array(6).fill(""));
+//       setName("");
+//       setEmail("");
+//       setResendIn(0);
+//       setSending(false);
+//       setVerifying(false);
+//     }
+//   }, [open]);
+
+//   useEffect(() => {
+//     let t;
+//     if (step === "otp" && resendIn > 0) {
+//       t = setInterval(() => setResendIn((s) => Math.max(0, s - 1)), 1000);
+//     }
+//     return () => t && clearInterval(t);
+//   }, [step, resendIn]);
+
+//   const sendOtp = async () => {
+//     if (!validPhone) return;
+//     setSending(true);
+//     await new Promise((r) => setTimeout(r, 800));
+//     setSending(false);
+//     setStep("otp");
+//     setResendIn(30);
+//     setOtp(Array(6).fill(""));
+//     setTimeout(() => inputsRef.current?.[0]?.focus(), 50);
+//   };
+
+//   const handleOtpChange = (idx, val) => {
+//     if (!/^\d?$/.test(val)) return;
+//     const next = [...otp];
+//     next[idx] = val;
+//     setOtp(next);
+//     if (val && idx < 5) inputsRef.current[idx + 1]?.focus();
+//   };
+//   const handleOtpKeyDown = (idx, e) => {
+//     if (e.key === "Backspace" && !otp[idx] && idx > 0) inputsRef.current[idx - 1]?.focus();
+//     if (e.key === "ArrowLeft" && idx > 0) inputsRef.current[idx - 1]?.focus();
+//     if (e.key === "ArrowRight" && idx < 5) inputsRef.current[idx + 1]?.focus();
+//   };
+//   const handleOtpPaste = (e) => {
+//     const text = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+//     if (!text) return;
+//     const next = Array(6).fill("").map((_, i) => text[i] ?? "");
+//     setOtp(next);
+//     const last = Math.min(text.length, 6) - 1;
+//     inputsRef.current[last >= 0 ? last : 0]?.focus();
+//     e.preventDefault();
+//   };
+
+//   const otpFilled = useMemo(() => otp.join("").length === 6, [otp]);
+
+//   const verifyOtp = async () => {
+//     if (!otpFilled) return;
+//     setVerifying(true);
+//     await new Promise((r) => setTimeout(r, 800));
+//     setVerifying(false);
+//     setStep("details");
+//   };
+
+//   const resend = async () => {
+//     if (resendIn > 0) return;
+//     setSending(true);
+//     await new Promise((r) => setTimeout(r, 700));
+//     setSending(false);
+//     setResendIn(30);
+//     setOtp(Array(6).fill(""));
+//     inputsRef.current?.[0]?.focus();
+//   };
+
+//   const saveDetails = async () => {
+//     onSuccess?.({ phone, name: name.trim(), email: email.trim() });
+//     onClose();
+//   };
+
+//   const handleBackdrop = (e) => {
+//     if (e.target === e.currentTarget) onClose();
+//   };
+
+//   useEffect(() => {
+//     const onEsc = (e) => e.key === "Escape" && onClose();
+//     if (open) window.addEventListener("keydown", onEsc);
+//     return () => window.removeEventListener("keydown", onEsc);
+//   }, [open, onClose]);
+
+//   return (
+//     <div
+//       className={`fixed inset-0 z-[100] ${open ? "pointer-events-auto" : "pointer-events-none"}`}
+//       aria-hidden={!open}
+//       onClick={handleBackdrop}
+//     >
+//       <div className={`absolute inset-0 bg-black/50 transition-opacity ${open ? "opacity-100" : "opacity-0"}`} />
+//       <aside
+//         className={`absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl
+//         transition-transform duration-200 ease-out ${open ? "translate-x-0" : "translate-x-full"}`}
+//         role="dialog"
+//         aria-modal="true"
+//       >
+//         <div className="flex items-center justify-between px-6 h-16 border-b">
+//           <div className="flex items-center gap-3">
+//             <div className="w-9 h-9 rounded-full bg-[#025da8] grid place-items-center">
+//               <span className="text-white font-bold text-lg">✓</span>
+//             </div>
+//             <h3 className="text-lg font-semibold">Quick Login / Register</h3>
+//           </div>
+//           <button onClick={onClose} aria-label="Close" className="p-2 w-[40px] h-[40px] rounded-full hover:bg-gray-100">✕</button>
+//         </div>
+
+//         <div className=" ">
+// <img className=" w-[180px] mt-[20px] mx-auto" src={logo} />
+//         </div>
+
+//         <div className="p-6 pb-20 ">
+//           {step === "phone" && (
+//             <div className="space-y-9">
+//               <FloatingInput
+//                 label="Mobile number"
+//                 iconClass="fa-regular fa-mobile"
+//                 type="tel"
+//                 inputMode="numeric"
+//                 maxLength={10}
+//                 value={phone}
+//                 onChange={(v) => setPhone(v.replace(/\D/g, "").slice(0, 10))}
+//                 error={phoneError}
+//               />
+
+//               <button
+//                 disabled={!validPhone || sending}
+//                 onClick={sendOtp}
+//                 className={`w-full h-12 rounded-md  font-semibold text-white transition
+//                  ${validPhone && !sending ? "bg-[#025da8] hover:brightness-110" : "bg-[#9bbbe2] cursor-not-allowed"}`}
+//               >
+//                 {sending ? "Sending..." : "Send OTP"}
+//               </button>
+
+//               <p className="text-xs absolute w-[92%] bottom-4 text-gray-500">
+//                 By continuing, you agree to our{" "}
+//                 <a href="#" className="underline">Privacy Policy</a> and{" "}
+//                 <a href="#" className="underline">Terms & Conditions</a>.
+//               </p>
+//             </div>
+//           )}
+
+//           {step === "otp" && (
+//             <div className="space-y-5 mx-auto">
+//               <div className="text-sm text-gray-700">
+//                 OTP sent to <span className="font-semibold">+91 {phone}</span>
+//               </div>
+
+//               <div className="flex gap-4" onPaste={handleOtpPaste}>
+//                 {otp.map((d, i) => (
+//                   <input
+//                     key={i}
+//                     ref={(el) => (inputsRef.current[i] = el)}
+//                     inputMode="numeric"
+//                     maxLength={1}
+//                     value={d}
+//                     onChange={(e) => handleOtpChange(i, e.target.value.replace(/\D/g, ""))}
+//                     onKeyDown={(e) => handleOtpKeyDown(i, e)}
+//                     className="w-12 h-12 text-center text-lg font-semibold border rounded-md focus:ring-2 focus:ring-emerald-500"
+//                   />
+//                 ))}
+//               </div>
+
+//               <div className="flex items-center justify-between text-sm">
+//                 <button
+//                   onClick={resend}
+//                   disabled={resendIn > 0 || sending}
+//                   className={`font-medium ${resendIn > 0 ? "text-gray-400 cursor-not-allowed" : "text-emerald-700 hover:underline"}`}
+//                 >
+//                   {resendIn > 0 ? `Resend OTP in ${resendIn}s` : "Resend OTP"}
+//                 </button>
+//                 <button onClick={() => setStep("phone")} className="text-gray-500 text-[13px] hover:underline">
+//                   Change number
+//                 </button>
+//               </div>
+
+//               <button
+//                 disabled={!otpFilled || verifying}
+//                 onClick={verifyOtp}
+//                 className={`w-full h-12 rounded-md font-semibold text-white transition
+//                   ${otpFilled && !verifying ? "bg-[#025da8] hover:brightness-110" : "bg-[#9bbbe2] cursor-not-allowed"}`}
+//               >
+//                 {verifying ? "Verifying..." : "Verify & Continue"}
+//               </button>
+//             </div>
+//           )}
+
+//           {step === "details" && (
+//             <div className="space-y-5">
+//               <FloatingInput
+//                 label="Full name"
+//                 iconClass="fa-regular fa-user"
+//                 value={name}
+//                 onChange={setName}
+//               />
+//               <FloatingInput
+//                 label="Email"
+//                 iconClass="fa-regular fa-envelope"
+//                 type="email"
+//                 value={email}
+//                 onChange={setEmail}
+//                 error={email && !/^\S+@\S+\.\S+$/.test(email) ? "Enter a valid email" : ""}
+//               />
+
+//               <button
+//                 onClick={saveDetails}
+//                 disabled={!name.trim() || !/^\S+@\S+\.\S+$/.test(email)}
+//                 className={`w-full h-12 rounded-md font-semibold text-white transition
+//                   ${name.trim() && /^\S+@\S+\.\S+$/.test(email)
+//                     ? "bg-[#025da8] hover:brightness-110"
+//                     : "bg-[#9bbbe2] cursor-not-allowed"}`}
+//               >
+//                 Save
+//               </button>
+//             </div>
+//           )}
+//         </div>
+//       </aside>
+//     </div>
+//   );
+// }
+
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import FloatingInput from "../../src/component/otherFolder/FloatingInput";
-import logo from "../../public/images/Logo/moveLogo.gif"
+import logo from "../../public/images/Logo/moveLogo.gif";
+import { ApiPost, ApiPut } from "../helper/axios"; // <-- make sure these exist
 
 export default function LoginDrawer({ open, onClose, onSuccess }) {
   const [step, setStep] = useState("phone");
@@ -317,16 +573,26 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
+  // server state
+  const [authToken, setAuthToken] = useState("");
+  const [userId, setUserId] = useState("");
+
   const validPhone = useMemo(() => /^[6-9]\d{9}$/.test(phone.trim()), [phone]);
   const phoneError =
-    phone.length > 0 && !validPhone ? "Enter a valid 10-digit Indian mobile number starting with 6–9." : "";
+    phone.length > 0 && !validPhone
+      ? "Enter a valid 10-digit Indian mobile number starting with 6–9."
+      : "";
 
+  // lock background scroll
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
+  // reset when opened
   useEffect(() => {
     if (open) {
       setStep("phone");
@@ -337,9 +603,12 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
       setResendIn(0);
       setSending(false);
       setVerifying(false);
+      setAuthToken("");
+      setUserId("");
     }
   }, [open]);
 
+  // resend ticker
   useEffect(() => {
     let t;
     if (step === "otp" && resendIn > 0) {
@@ -348,17 +617,148 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
     return () => t && clearInterval(t);
   }, [step, resendIn]);
 
+  // ---- API: Send OTP ----
   const sendOtp = async () => {
     if (!validPhone) return;
-    setSending(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setSending(false);
     setStep("otp");
-    setResendIn(30);
-    setOtp(Array(6).fill(""));
-    setTimeout(() => inputsRef.current?.[0]?.focus(), 50);
+    try {
+      setSending(true);
+      // change URL if yours differs
+      await ApiPost("/auth/send-otp", { mobileNumber: `${phone}` });
+      setResendIn(30);
+      setOtp(Array(6).fill(""));
+      setTimeout(() => inputsRef.current?.[0]?.focus(), 50);
+    } catch (e) {
+      console.error("send-otp failed:", e);
+      // optionally show a toast here
+    } finally {
+      setSending(false);
+    }
   };
 
+  // ---- API: Verify OTP ----
+const verifyOtp = async () => {
+  const code = otp.join("");
+  if (code.length !== 6) {
+    alert("Please enter a valid 6-digit OTP.");
+    return;
+  }
+
+  try {
+    setVerifying(true);
+
+    // If you use a wrapper like ApiPost, keep it. Otherwise use axios.post.
+    const { data } = await ApiPost("/auth/verify-otp", {
+      mobileNumber: phone,     // <-- backend expects mobileNumber
+      otp: code,
+    });
+
+    // Expected shape (your sample):
+    // { success, message, userId, user, token }
+    if (!data?.token || !data?.userId) {
+      alert(data?.message || "Could not verify OTP. Please try again.");
+      return;
+    }
+
+    // Persist auth
+    localStorage.setItem("auth_token", data.token);
+    localStorage.setItem("auth_user_id", data.userId);
+    if (data.user) localStorage.setItem("auth_user", JSON.stringify(data.user));
+
+    // Decide next step: if user already has name & email, finish; else open details step
+    const u = data.user || {};
+    const hasName = !!u?.name?.trim?.();
+    const hasEmail = !!u?.email && /^\S+@\S+\.\S+$/.test(u.email);
+
+    if (hasName && hasEmail) {
+      onSuccess?.({ token: data.token, userId: data.userId, user: u });
+      onClose();
+    } else {
+      setName(u?.name || "");
+      setEmail(u?.email || "");
+      setStep("details");
+    }
+  } catch (err) {
+    console.error("verify-otp failed:", err);
+    alert(err?.response?.data?.message || "Failed to verify OTP.");
+  } finally {
+    setVerifying(false);
+  }
+};
+
+
+  // ---- API: Resend OTP (same endpoint as send) ----
+  const resend = async () => {
+    if (resendIn > 0) return;
+    try {
+      setSending(true);
+      await ApiPost("/auth/send-otp", { mobileNumber: `${phone}` });
+      setResendIn(30);
+      setOtp(Array(6).fill(""));
+      inputsRef.current?.[0]?.focus();
+    } catch (e) {
+      console.error("resend-otp failed:", e);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  // ---- API: Update profile (if user is new / missing data) ----
+const saveDetails = async () => {
+  const nm = name.trim();
+  const em = email.trim();
+
+  if (!nm) return alert("Please enter your name.");
+  if (!/^\S+@\S+\.\S+$/.test(em)) return alert("Please enter a valid email.");
+
+  // ✅ Get userId from localStorage
+  const storedUserId = localStorage.getItem("auth_user_id") || null;
+  if (!storedUserId) return console.error("Missing userId for profile update.");
+
+  const payload = { name: nm, email: em };
+
+  try {
+    setVerifying(true);
+
+    // PUT /user/:userId
+    const res = await ApiPut(`/auth/user/${storedUserId}`, payload);
+
+    const updated =
+      res?.data?.user ||
+      res?.data?.data ||
+      res?.data ||
+      {};
+
+    // Merge with existing local user data
+    const prevUser = JSON.parse(localStorage.getItem("auth_user") || "{}");
+    const mergedUser = {
+      ...prevUser,
+      ...updated,
+      name: updated.name ?? nm,
+      email: updated.email ?? em,
+    };
+
+    localStorage.setItem("auth_user", JSON.stringify(mergedUser));
+
+    onSuccess?.({
+      userId: storedUserId,
+      phone: `+91${phone}`,
+      token: localStorage.getItem("auth_token"),
+      user: mergedUser,
+    });
+
+    onClose?.();
+  } catch (e) {
+    console.error("Profile update failed:", e);
+    alert(e?.response?.data?.message || "Failed to update profile.");
+  } finally {
+    setVerifying(false);
+  }
+};
+
+
+
+  // ----- OTP inputs handlers -----
   const handleOtpChange = (idx, val) => {
     if (!/^\d?$/.test(val)) return;
     const next = [...otp];
@@ -367,14 +767,17 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
     if (val && idx < 5) inputsRef.current[idx + 1]?.focus();
   };
   const handleOtpKeyDown = (idx, e) => {
-    if (e.key === "Backspace" && !otp[idx] && idx > 0) inputsRef.current[idx - 1]?.focus();
+    if (e.key === "Backspace" && !otp[idx] && idx > 0)
+      inputsRef.current[idx - 1]?.focus();
     if (e.key === "ArrowLeft" && idx > 0) inputsRef.current[idx - 1]?.focus();
     if (e.key === "ArrowRight" && idx < 5) inputsRef.current[idx + 1]?.focus();
   };
   const handleOtpPaste = (e) => {
     const text = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
     if (!text) return;
-    const next = Array(6).fill("").map((_, i) => text[i] ?? "");
+    const next = Array(6)
+      .fill("")
+      .map((_, i) => text[i] ?? "");
     setOtp(next);
     const last = Math.min(text.length, 6) - 1;
     inputsRef.current[last >= 0 ? last : 0]?.focus();
@@ -383,33 +786,12 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
 
   const otpFilled = useMemo(() => otp.join("").length === 6, [otp]);
 
-  const verifyOtp = async () => {
-    if (!otpFilled) return;
-    setVerifying(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setVerifying(false);
-    setStep("details");
-  };
-
-  const resend = async () => {
-    if (resendIn > 0) return;
-    setSending(true);
-    await new Promise((r) => setTimeout(r, 700));
-    setSending(false);
-    setResendIn(30);
-    setOtp(Array(6).fill(""));
-    inputsRef.current?.[0]?.focus();
-  };
-
-  const saveDetails = async () => {
-    onSuccess?.({ phone, name: name.trim(), email: email.trim() });
-    onClose();
-  };
-
+  // backdrop close
   const handleBackdrop = (e) => {
     if (e.target === e.currentTarget) onClose();
   };
 
+  // ESC close
   useEffect(() => {
     const onEsc = (e) => e.key === "Escape" && onClose();
     if (open) window.addEventListener("keydown", onEsc);
@@ -436,14 +818,16 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
             </div>
             <h3 className="text-lg font-semibold">Quick Login / Register</h3>
           </div>
-          <button onClick={onClose} aria-label="Close" className="p-2 w-[40px] h-[40px] rounded-full hover:bg-gray-100">✕</button>
+          <button onClick={onClose} aria-label="Close" className="p-2 w-[40px] h-[40px] rounded-full hover:bg-gray-100">
+            ✕
+          </button>
         </div>
 
-        <div className=" ">
-<img className=" w-[180px] mt-[20px] mx-auto" src={logo} />
+        <div className="">
+          <img className="w-[180px] mt-[20px] mx-auto" src={logo} />
         </div>
 
-        <div className="p-6 pb-20 ">
+        <div className="p-6 pb-20">
           {step === "phone" && (
             <div className="space-y-9">
               <FloatingInput
@@ -468,8 +852,14 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
 
               <p className="text-xs absolute w-[92%] bottom-4 text-gray-500">
                 By continuing, you agree to our{" "}
-                <a href="#" className="underline">Privacy Policy</a> and{" "}
-                <a href="#" className="underline">Terms & Conditions</a>.
+                <a href="#" className="underline">
+                  Privacy Policy
+                </a>{" "}
+                and{" "}
+                <a href="#" className="underline">
+                  Terms & Conditions
+                </a>
+                .
               </p>
             </div>
           )}
@@ -521,12 +911,7 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
 
           {step === "details" && (
             <div className="space-y-5">
-              <FloatingInput
-                label="Full name"
-                iconClass="fa-regular fa-user"
-                value={name}
-                onChange={setName}
-              />
+              <FloatingInput label="Full name" iconClass="fa-regular fa-user" value={name} onChange={setName} />
               <FloatingInput
                 label="Email"
                 iconClass="fa-regular fa-envelope"

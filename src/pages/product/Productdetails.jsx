@@ -353,37 +353,22 @@ import TechnicalDetails from "../../component/ProductDetails/Technicaldetails"
 // }
 
 
-"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import Header from "../../component/Header";
-import { ApiGet } from "../../helper/axios";
- import amaze1 from "../../../public/images/productDetails/amaze1.jpg"
+import { ApiGet, ApiPost } from "../../helper/axios";
 import CartDrawer from "../../component/otherFolder/CartDrawer";
 
 export default function Productdetails() {
-  // -------- router inputs (either via route param or navigation state) -------
-  const { id: idOrSlugParam } = useParams(); // supports /product-details/:idOrSlug
+  // --- route / state params ---
+  const { id: idOrSlugParam } = useParams();
   const location = useLocation();
   const idFromState = location?.state?.id ?? null;
   const nameFromState = location?.state?.name ?? "";
-
   const idOrSlug = idFromState || idOrSlugParam;
-  const [openCart, setOpenCart] = useState(false);
-  const [qty, setQty] = useState(1);
 
-  const product1 = {
-    id: "fan-001",
-    title: "Rotex Trio Modern BLDC Ceiling Fan – Sleek Style, Whisper-Quiet",
-    price: 3799,
-    image: amaze1,
-    colorName: "Matte Black",
-    colorHex: "#2B2B2B",
-    quantity: qty,
-  };
-
-  // ----------------------------- local state ---------------------------------
+  // --- UI state ---
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
 
@@ -391,23 +376,28 @@ export default function Productdetails() {
   const [selectedColorKey, setSelectedColorKey] = useState(null);
 
   const [quantity, setQuantity] = useState(1);
-  const [showImagePopup, setShowImagePopup] = useState(false);
-  const [popupImageIndex, setPopupImageIndex] = useState(0);
 
-  // ----------------------------- fetch product --------------------------------
+  // Cart UI
+  const [openCart, setOpenCart] = useState(false);
+  const [qty, setQty] = useState(1);
+  const [adding, setAdding] = useState(false);
+  const [serverCart, setServerCart] = useState(null);
+
+  // -------- Fetch product by id/slug --------
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
         setLoading(true);
 
-        // Try common endpoints; keep first that returns an object with _id or title
         async function tryGet(url) {
           try {
             const res = await ApiGet(url);
             const data = res?.data?.data || res?.data?.product || res?.data;
             if (data && (data._id || data.title)) return data;
-          } catch {}
+          } catch {
+            /* noop */
+          }
           return null;
         }
 
@@ -417,22 +407,23 @@ export default function Productdetails() {
         }
 
         const candidates = [
-          `/products/${idOrSlug}`,
+          // `/products/${idOrSlug}`,
           `/product/${idOrSlug}`,
-          `/product-details/${idOrSlug}`,
+          // `/product-details/${idOrSlug}`,
         ];
 
         let found = null;
         for (const path of candidates) {
-          found = await tryGet(path);
-          if (found) break;
+          const data = await tryGet(path);
+          if (data) {
+            found = data;
+            break;
+          }
         }
 
         if (mounted) {
           setProduct(found);
-          // preselect first color variant if present
-          const firstVariantKey =
-            found?.productImages?.[0]?.color ?? null;
+          const firstVariantKey = found?.productImages?.[0]?.color ?? null;
           setSelectedColorKey(firstVariantKey);
           setSelectedImage(0);
         }
@@ -445,18 +436,13 @@ export default function Productdetails() {
     };
   }, [idOrSlug]);
 
-  // ----------------------------- helpers -------------------------------------
-  const px = (n) =>
-    typeof n === "number" ? n.toLocaleString("en-IN") : n ?? "";
+  // -------- helpers --------
+  const px = (n) => (typeof n === "number" ? n.toLocaleString("en-IN") : n ?? "");
 
   const variants = useMemo(() => {
-    // Normalize variants from product.productImages
-    const list = Array.isArray(product?.productImages)
-      ? product.productImages
-      : [];
-    // Create safe keys for colors (hex or name); also carry price/mrp per variant
+    const list = Array.isArray(product?.productImages) ? product.productImages : [];
     return list.map((v, idx) => ({
-      key: v.color ?? `variant_${idx}`,
+      key: v.color ?? `variant_${idx}`,     // can be hex or name
       label: v.color ?? `Variant ${idx + 1}`,
       images: Array.isArray(v.images) ? v.images : [],
       price: v.price,
@@ -466,52 +452,125 @@ export default function Productdetails() {
 
   const activeVariant = useMemo(() => {
     if (!variants.length) return null;
-    const byKey = variants.find((v) => v.key === selectedColorKey);
-    return byKey || variants[0];
+    return variants.find((v) => v.key === selectedColorKey) || variants[0];
   }, [variants, selectedColorKey]);
 
-  // Fallback images if variant has none
   const productImagesFlat = useMemo(() => {
-    // flatten all variant images if needed
-    const imgs =
-      variants.flatMap((v) => (Array.isArray(v.images) ? v.images : [])) || [];
-    return imgs;
+    return variants.flatMap((v) => (Array.isArray(v.images) ? v.images : [])) || [];
   }, [variants]);
 
-  // The gallery shows ONLY the selected color’s images;
-  // if none, fall back to all images, else an empty array.
+  // Show ONLY the selected color images (falls back to all images if none)
   const galleryImages = useMemo(() => {
     if (activeVariant?.images?.length) return activeVariant.images;
     if (productImagesFlat.length) return productImagesFlat;
     return [];
   }, [activeVariant, productImagesFlat]);
 
-  // Price: prefer active variant’s price/mrp, then product-level price/maxPrice
+  // prefer variant price/mrp, fallback to product’s price/maxPrice
   const { price, mrp } = useMemo(() => {
-    const p =
-      activeVariant?.price ?? product?.price ?? undefined;
-    const m =
-      activeVariant?.mrp ?? product?.maxPrice ?? undefined;
+    const p = activeVariant?.price ?? product?.price ?? undefined;
+    const m = activeVariant?.mrp ?? product?.maxPrice ?? undefined;
     return { price: p, mrp: m };
   }, [activeVariant, product]);
 
   const discountPercent = useMemo(() => {
-    if (!(Number(mrp) > 0 && Number(price) > 0 && Number(mrp) > Number(price)))
-      return 0;
+    if (!(Number(mrp) > 0 && Number(price) > 0 && Number(mrp) > Number(price))) return 0;
     return Math.round(((Number(mrp) - Number(price)) / Number(mrp)) * 100);
   }, [price, mrp]);
 
-  // ----------------------------- image popup ---------------------------------
-  const openImagePopup = (index) => {
-    setPopupImageIndex(index);
-    setShowImagePopup(true);
-  };
-  const nextImage = () =>
-    setPopupImageIndex((i) => (i + 1) % Math.max(galleryImages.length, 1));
-  const prevImage = () =>
-    setPopupImageIndex((i) => (i - 1 + Math.max(galleryImages.length, 1)) % Math.max(galleryImages.length, 1));
+  // -------- auth read (for createCart) --------
+  const getAuth = () => {
+    const token =
+      localStorage.getItem("auth_token") ||
+      localStorage.getItem("token") ||
+      null;
 
-  // ----------------------------- UI ------------------------------------------
+    const userId =
+      localStorage.getItem("auth_user_id") ||
+      localStorage.getItem("user") ||
+      JSON.parse(localStorage.getItem("auth_user") || "null")?._id ||
+      null;
+
+    return { token, userId };
+  };
+
+  // Build one line item compatible with your createCart service
+  const buildLineItemForApi = () => {
+    console.log('product', product)
+    if (!product?._id) return null;
+
+    const colorKey = activeVariant?.key || null;
+    const imageUrl = galleryImages?.[selectedImage] || galleryImages?.[0] || "";
+
+    return {
+      productId: product._id,
+      quantity,
+      selectedColor: colorKey,       // service does case-insensitive compare
+      selectedColorImage: imageUrl,  // optional
+    };
+  };
+
+  const handleAddToCart = async () => {
+    const item = buildLineItemForApi();
+    console.log('item', item)
+    if (!item) {
+      alert("Product is not ready to add.");
+      return;
+    }
+
+    try {
+      
+      setAdding(true);
+      const { token, userId } = getAuth();
+
+      console.log('userId', userId)
+
+      if (userId) {
+        // Logged-in: call /cart (your route that uses createCart(userId, items))
+        const res = await ApiPost("/cart", { userId, items: [item] });
+        setServerCart(res?.data || null);
+      } else {
+        // Guest cart in localStorage
+        const key = "guest_cart";
+        const raw = localStorage.getItem(key);
+        const cart = raw ? JSON.parse(raw) : { items: [], totalPrice: 0 };
+
+        const idx = cart.items.findIndex(
+          (it) =>
+            String(it.productId) === String(item.productId) &&
+            String(it.selectedColor || "") === String(item.selectedColor || "")
+        );
+
+        if (idx >= 0) {
+          cart.items[idx].quantity += Number(item.quantity || 1);
+          // keep latest chosen image
+          cart.items[idx].selectedColorImage = item.selectedColorImage;
+        } else {
+          cart.items.push(item);
+        }
+
+        const unit = Number(price) || 0;
+        cart.totalPrice = cart.items.reduce(
+          (s, it) => s + unit * Number(it.quantity || 0),
+          0
+        );
+
+        localStorage.setItem(key, JSON.stringify(cart));
+        setServerCart(cart);
+      }
+
+      // open drawer & sync its qty UI
+      setQty(quantity);
+      setOpenCart(true);
+    } catch (err) {
+      console.error("Add to cart failed:", err);
+      alert(err?.response?.data?.message || "Failed to add to cart.");
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  // -------- UI --------
   if (loading) {
     return (
       <>
@@ -534,9 +593,16 @@ export default function Productdetails() {
     );
   }
 
-
-
-  const addToCart = () => setOpenCart(true);
+  const lineItemForDrawer = {
+    productId: product?._id,
+    title: product?.title || nameFromState || "Product",
+    price: Number(price) || 0,
+    image: galleryImages?.[0],
+    colorName:
+      variants.find((v) => v.key === selectedColorKey)?.label || activeVariant?.label,
+    colorHex: selectedColorKey || activeVariant?.key,
+    quantity: qty,
+  };
 
   return (
     <>
@@ -544,7 +610,7 @@ export default function Productdetails() {
       <div className="min-h-screen font-Poppins pt-[110px]">
         <div className="w-[90%] mx-auto flex flex-col gap-[70px] px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* ---------------------- Image Gallery ---------------------- */}
+            {/* ---------- Gallery ---------- */}
             <div className="space-y-4 mx-auto">
               <div className="relative bg-white rounded-2xl w-fit border shadow-lg overflow-hidden group">
                 <div className="min-h-[400px] h-[500px]">
@@ -552,7 +618,6 @@ export default function Productdetails() {
                     src={galleryImages[selectedImage] || "/placeholder.svg"}
                     alt={product?.title || "Product"}
                     className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
-                    // onClick={() => openImagePopup(selectedImage)}
                   />
                 </div>
               </div>
@@ -578,7 +643,8 @@ export default function Productdetails() {
                 ))}
               </div>
             </div>
-            {/* ---------------------- Product Details ---------------------- */}
+
+            {/* ---------- Details ---------- */}
             <div className="space-y-2">
               <div>
                 <div className="flex items-center space-x-2">
@@ -597,9 +663,7 @@ export default function Productdetails() {
                 </h1>
 
                 {!!product?.subTitle && (
-                  <p className="text-gray-600 text-[14px] mb-3">
-                    {product.subTitle}
-                  </p>
+                  <p className="text-gray-600 text-[14px] mb-3">{product.subTitle}</p>
                 )}
 
                 <div className="flex items-center space-x-4 mb-2">
@@ -620,7 +684,7 @@ export default function Productdetails() {
                   )}
                 </div>
 
-                {/* simple static rating look */}
+                {/* simple static rating */}
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
@@ -632,16 +696,15 @@ export default function Productdetails() {
                   </div>
                 </div>
               </div>
-              {/* ---------------------- Color Selection ---------------------- */}
+
+              {/* Color variants */}
               {!!variants.length && (
                 <div>
                   <h3 className="text-[18px] font-semibold text-gray-900">
                     Color:
                     <b className="font-[500] text-[17px] ml-[8px]">
-                      {
-                        (variants.find((v) => v.key === selectedColorKey)?.label) ||
-                        variants[0].label
-                      }
+                      {variants.find((v) => v.key === selectedColorKey)?.label ||
+                        variants[0].label}
                     </b>
                   </h3>
                   <div className="flex space-x-2 mt-2">
@@ -649,8 +712,8 @@ export default function Productdetails() {
                       <button
                         key={v.key}
                         onClick={() => {
-                          setSelectedColorKey(v.key);   // choose color
-                          setSelectedImage(0);          // start from first image of this color
+                          setSelectedColorKey(v.key);
+                          setSelectedImage(0);
                         }}
                         className={`relative w-10 h-10 rounded-full border-2 transition-all ${
                           selectedColorKey === v.key
@@ -665,7 +728,7 @@ export default function Productdetails() {
                 </div>
               )}
 
-              {/* ---------------------- Key Features ---------------------- */}
+              {/* Key features */}
               {!!product?.description?.length && (
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mt-[20px] mb-4">
@@ -675,23 +738,20 @@ export default function Productdetails() {
                     {product.description.slice(0, 4).map((line, i) => (
                       <div key={i} className="flex items-center space-x-2">
                         <i className="fa-solid text-[20px] text-[#025da8] fa-circle-check" />
-                        <span className="text-[15px] font-[500] text-gray-700">
-                          {line}
-                        </span>
+                        <span className="text-[15px] font-[500] text-gray-700">{line}</span>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* ---------------------- Quantity & CTA ---------------------- */}
+              {/* Quantity & CTA */}
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
                   <label className="text-lg font-semibold text-gray-900">Quantity:</label>
                   <div className="flex items-center border border-gray-300 rounded-lg">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-
                       className="px-3 py-2 text-gray-600 hover:text-gray-800"
                     >
                       -
@@ -707,8 +767,12 @@ export default function Productdetails() {
                 </div>
 
                 <div className="flex space-x-4">
-                  <button className="flex-1 bg-[#025da8] text-white py-2 px-8 rounded-lg font-semibold text-lg transition-colors"  onClick={addToCart}>
-                    Add to Cart
+                  <button
+                    className="flex-1 bg-[#025da8] text-white py-2 px-8 rounded-lg font-semibold text-lg transition-colors disabled:opacity-60"
+                    onClick={handleAddToCart}
+                    disabled={adding}
+                  >
+                    {adding ? "Adding…" : "Add to Cart"}
                   </button>
                   <button className="px-2 py-2 border-2 border-[#025da8] text-[#025da8] rounded-lg hover:bg-red-50 transition-colors">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -722,7 +786,8 @@ export default function Productdetails() {
                   </button>
                 </div>
               </div>
-              {/* ---------------------- Trust Indicators ---------------------- */}
+
+              {/* Trust indicators */}
               <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200">
                 <div className="text-center">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
@@ -755,64 +820,23 @@ export default function Productdetails() {
             </div>
           </div>
 
-
-          <ProductSpecifications />
-          <TechnicalDetails />
+          {/* (Optional) specs & tech sections you had before */}
+          {/* <ProductSpecifications /> */}
+          {/* <TechnicalDetails /> */}
         </div>
 
-        {/* ---------------------- Image Popup Modal ---------------------- */}
-        {showImagePopup && (
-          <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
-            <div className="relative max-w-4xl max-h-full">
-              <button
-                onClick={() => setShowImagePopup(false)}
-                className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
-              >
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-
-              <button
-                onClick={prevImage}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10"
-              >
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-
-              <button
-                onClick={nextImage}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10"
->
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-
-              <img
-                src={productImages[popupImageIndex] || "/placeholder.svg"}
-                alt="Product enlarged view"
-                className="max-w-full max-h-full object-contain"
-              />
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-sm">
-                {popupImageIndex + 1} / {productImages.length}
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Cart Drawer */}
+        <CartDrawer
+          open={openCart}
+          onClose={() => setOpenCart(false)}
+          lineItem={lineItemForDrawer}
+          onQtyChange={setQty}
+          onProceed={() => {
+            console.log("Server/Guest cart state:", serverCart);
+            // navigate("/checkout") or continue your flow
+          }}
+        />
       </div>
-          <CartDrawer
-        open={openCart}
-        onClose={() => setOpenCart(false)}
-        lineItem={{ ...product1, quantity: qty }}
-        onQtyChange={setQty}
-        onProceed={() => {
-          // navigate("/checkout") or open your checkout drawer/page
-          console.log("Proceeding with:", { ...product1, quantity: qty });
-        }}
-      />
     </>
   );
 }
