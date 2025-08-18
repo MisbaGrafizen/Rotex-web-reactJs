@@ -9,8 +9,8 @@
 // import amaze3 from "../../../public/images/productDetails/amaze3.jpg"
 // import amaze4 from "../../../public/images/productDetails/amaze4.jpg"
 // import amaze5 from "../../../public/images/productDetails/amaze5.jpg"
-import ProductSpecifications from "../../component/ProductDetails/Productspecifications"
-import TechnicalDetails from "../../component/ProductDetails/Technicaldetails"
+// import ProductSpecifications from "../../component/ProductDetails/Productspecifications"
+// import TechnicalDetails from "../../component/ProductDetails/Technicaldetails"
 
 
 

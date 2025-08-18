@@ -2,6 +2,7 @@
 import { useState } from "react"
 import logo from "../../public/images/Logo/moveLogo.gif"
 import LoginDrawer from "../component/LoginDrawer";
+import { useNavigate } from "react-router-dom";
 
 const megaMenuData = {
     "Search by Category": {
@@ -66,7 +67,11 @@ export default function Header() {
     const [activeDropdown, setActiveDropdown] = useState(null)
     const [selectedPage, setSelectedPage] = useState("New Products")
       const [loginOpen, setLoginOpen] = useState(false);
+const navigate = useNavigate()
 
+const handleMyAccount =()=>{
+    navigate("/my-account")
+}
 
     return (
         <header className="fixed top-0 pl-[60px] font-Poppins flex flex-col w-[100%] h-[90px] shadow-xl left-0 right-0 z-50 bg-[#fafafa]">
@@ -172,7 +177,7 @@ export default function Header() {
                                     For Business
                                 </button>
 
-                                <button className="text-gray-700 hover:text-[#025da8] transition-colors duration-200 px-[3px] py-[10px]">
+                                <button className="text-gray-700 hover:text-[#025da8] transition-colors duration-200 px-[3px] py-[10px]" onClick={handleMyAccount}>
                                     <i className="fa-regular text-[20px] fa-cart-shopping"></i>
                                 </button>
 
