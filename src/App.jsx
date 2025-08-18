@@ -14,6 +14,7 @@ import Home from "./pages/home/Home";
 import AllProduct from "./pages/product/AllProduct";
 import Productdetails from "./pages/product/Productdetails";
 import CheckoutPage from "./pages/product/CheckoutPage";
+import MyAccount from "./pages/profile/MyAccount";
 
 
 
@@ -45,6 +46,8 @@ function App() {
           <Route path="/all-products" element={<AllProduct />} />
           <Route path="/product-details/:title" element={<Productdetails />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/my-account" element={<MyAccount />} />
+
 
 
 
