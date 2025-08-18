@@ -824,12 +824,12 @@ const saveDetails = async () => {
         </div>
 
         <div className="">
-          <img className="w-[180px] mt-[20px] mx-auto" src={logo} />
+          <img className="w-[180px] mt-[20px] ml-[20px]" src={logo} />
         </div>
 
         <div className="p-6 pb-20">
           {step === "phone" && (
-            <div className="space-y-9">
+            <div className="space-y-5">
               <FloatingInput
                 label="Mobile number"
                 iconClass="fa-regular fa-mobile"

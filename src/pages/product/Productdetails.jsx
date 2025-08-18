@@ -596,6 +596,7 @@ export default function Productdetails() {
   const lineItemForDrawer = {
     productId: product?._id,
     title: product?.title || nameFromState || "Product",
+    description:product?.subTitle,
     price: Number(price) || 0,
     image: galleryImages?.[0],
     colorName:
@@ -820,10 +821,12 @@ export default function Productdetails() {
             </div>
           </div>
 
-          {/* (Optional) specs & tech sections you had before */}
-          {/* <ProductSpecifications /> */}
-          {/* <TechnicalDetails /> */}
+
+          <ProductSpecifications />
+          <TechnicalDetails />
         </div>
+
+
 
         {/* Cart Drawer */}
         <CartDrawer

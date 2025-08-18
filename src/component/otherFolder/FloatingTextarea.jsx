@@ -1,13 +1,12 @@
 import { useState } from "react";
 
-export default function FloatingInput({
+export default function FloatingTextarea({
   label,
   iconClass,
-  type = "text",
   value,
   onChange,
   maxLength,
-  inputMode,
+  rows = 4,
   disabled = false,
   error = "",
 }) {
@@ -18,35 +17,43 @@ export default function FloatingInput({
 
   return (
     <label className="relative block w-full">
+      {/* Floating Label */}
       <span
         className={`absolute transition-all duration-200
-        ${labelActive
-            ? "top-[-10px] left-[24px] px-[6px] bg-white border rounded-[10px] text-[10px] border-[#025da8] text-[#025da8]"
-            : "top-[10px] left-10 text-sm text-neutral-500"
+          ${
+            labelActive
+              ? "top-[-10px] left-[18px] px-[6px] bg-white border rounded-[10px] text-[10px] border-[#025da8] text-[#025da8]"
+              : "top-[10px] left-10 text-sm text-neutral-500"
           }`}
       >
         {label}
       </span>
 
+      {/* Optional Icon */}
       {iconClass && (
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#025da8]">
+        <span className="absolute left-3 top-[8px] text-[#025da8]">
           <i className={iconClass} />
         </span>
       )}
 
-      <input
-        type={type}
+      {/* Textarea */}
+      <textarea
         value={value}
-        maxLength={maxLength}
-        inputMode={inputMode}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         disabled={disabled}
-        className={`w-full h-[40px] rounded-[7px] border bg-white pl-10 pr-3 text-sm text-neutral-900
-        outline-none focus:ring-[1px] ${error ? "border-[#025da8] focus:ring-[#025da8]" : "border-neutral-300 focus:ring-[#025da8]"}`}
+        maxLength={maxLength}
+        rows={rows}
+        className={`w-full rounded-[7px] border bg-white pl-10 pr-3 py-2 text-sm text-neutral-900 resize-y
+          outline-none focus:ring-[1px] ${
+            error
+              ? "border-[#025da8] focus:ring-[#025da8]"
+              : "border-neutral-300 focus:ring-[#025da8]"
+          }`}
       />
 
+      {/* Error */}
       {error ? (
         <span className="mt-1 block absolute text-xs text-red-600">{error}</span>
       ) : null}
