@@ -73,7 +73,7 @@
 //     <>
 // <Header />
 //     <div className="min-h-screen font-Poppins pt-[110px] ">
-   
+
 
 
 
@@ -89,12 +89,12 @@
 //                   src={productImages[selectedImage] || "/placeholder.svg"}
 //                   alt="Product main view"
 //                   className="w-full h-full object-cover  transition-transform duration-300 group-hover:scale-105"
-            
+
 //                 />
 //               </div>
 //               <div className="absolute top-4 right-4">
 //                 {/* <button
-         
+
 //                   className="bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-colors"
 //                 >
 //                   <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,14 +203,14 @@
 //               </div>
 //             </div>
 
-      
+
 
 //             {/* Key Features */}
 //             <div>
 //               <h3 className="text-lg font-semibold text-gray-900  mt-[20px] mb-4">Key Features</h3>
 //               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
 //                 <div className="flex items-center space-x-2">
-                
+
 //                 <i className="fa-solid text-[20px] text-[#025da8] fa-circle-check"></i>
 
 //                   <span className=" text-[15px] font-[500] text-gray-700">Remote Control</span>
@@ -519,7 +519,7 @@ export default function Productdetails() {
     }
 
     try {
-      
+
       setAdding(true);
       const { token, userId } = getAuth();
 
@@ -570,6 +570,43 @@ export default function Productdetails() {
     }
   };
 
+  // map hex → human name
+  const colorNames = {
+    "#dddcdc": "White",
+    "#363636": "Matte Black",
+    "#4b3933": "Chocolate Brown",
+    "#dfdfdf": "White and Grey",
+    "#311d1c": "Brown",
+    "#191919": "Black",
+    "#505a65": "Black and Grey",
+    "#d2cabb": "Ivory",
+    "#996a5a": "Dark Shade",
+    "#b89455": "Light Shade",
+    "#d4dadb": "Star White",
+    "#e2e4e5": "Pearl White",
+    "#3b2424": "Metalic Brown",
+    "#ce9e4c": "Antique Ivory",
+    "#735140": "Wood Ivory",
+    "#213d5d": "Blue Ocean",
+    "#2d2d2b": "Black and Gold",
+  };
+
+  const normalizeHex = (hex) => {
+    if (!hex) return "";
+    const h = String(hex).trim().toLowerCase();
+    return h.startsWith("#") ? h : `#${h}`;
+  };
+
+  const isHexLike = (val) => /^#?[0-9a-f]{3,6}$/i.test(String(val || "").trim());
+
+  // prefer human name if label isn’t a hex; otherwise map the hex to a name
+  const toDisplayColorName = (colorKey, fallbackLabel) => {
+    if (fallbackLabel && !isHexLike(fallbackLabel)) return fallbackLabel;
+    const hex = normalizeHex(colorKey);
+    return colorNames[hex] || "Unknown Color";
+  };
+
+
   // -------- UI --------
   if (loading) {
     return (
@@ -593,17 +630,22 @@ export default function Productdetails() {
     );
   }
 
+  const activeLabel =
+    variants.find((v) => v.key === selectedColorKey)?.label || activeVariant?.label;
+
   const lineItemForDrawer = {
     productId: product?._id,
     title: product?.title || nameFromState || "Product",
     description:product?.subTitle,
     price: Number(price) || 0,
+    mrp: Number(mrp) || 0,
     image: galleryImages?.[0],
-    colorName:
-      variants.find((v) => v.key === selectedColorKey)?.label || activeVariant?.label,
-    colorHex: selectedColorKey || activeVariant?.key,
+    colorHex: normalizeHex(selectedColorKey || activeVariant?.key),
+    colorName: toDisplayColorName(selectedColorKey || activeVariant?.key, activeLabel),
     quantity: qty,
   };
+
+  console.log('lineItemForDrawer', lineItemForDrawer);
 
   return (
     <>
@@ -628,11 +670,10 @@ export default function Productdetails() {
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedImage === index
-                        ? "border-[#025da8bc] ring-2 ring-[#025da87a]"
-                        : "border-gray-200 hover:border-gray-300"
-                    }`}
+                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${selectedImage === index
+                      ? "border-[#025da8bc] ring-2 ring-[#025da87a]"
+                      : "border-gray-200 hover:border-gray-300"
+                      }`}
                     title={`Image ${index + 1}`}
                   >
                     <img
@@ -704,30 +745,38 @@ export default function Productdetails() {
                   <h3 className="text-[18px] font-semibold text-gray-900">
                     Color:
                     <b className="font-[500] text-[17px] ml-[8px]">
-                      {variants.find((v) => v.key === selectedColorKey)?.label ||
-                        variants[0].label}
+                      {toDisplayColorName(
+                        selectedColorKey || variants[0]?.key,
+                        variants.find(v => v.key === selectedColorKey)?.label || variants[0]?.label
+                      )}
                     </b>
                   </h3>
+
+
                   <div className="flex space-x-2 mt-2">
-                    {variants.map((v) => (
-                      <button
-                        key={v.key}
-                        onClick={() => {
-                          setSelectedColorKey(v.key);
-                          setSelectedImage(0);
-                        }}
-                        className={`relative w-10 h-10 rounded-full border-2 transition-all ${
-                          selectedColorKey === v.key
-                            ? "border-[#025da8bc] ring-2 ring-[#025da87a]"
-                            : "border-gray-100 hover:border-gray-400"
-                        }`}
-                        style={{ backgroundColor: v.key }}
-                        title={v.label}
-                      />
-                    ))}
+                    <div className="flex space-x-2 mt-2">
+                      {variants.map((v) => {
+                        const name = toDisplayColorName(v.key, v.label);
+                        return (
+                          <button
+                            key={v.key}
+                            onClick={() => { setSelectedColorKey(v.key); setSelectedImage(0); }}
+                            className={`relative w-10 h-10 rounded-full border-2 transition-all ${selectedColorKey === v.key
+                                ? "border-[#025da8bc] ring-2 ring-[#025da87a]"
+                                : "border-gray-100 hover:border-gray-400"
+                              }`}
+                            style={{ backgroundColor: normalizeHex(v.key) }}
+                            title={name}
+                            aria-label={name}
+                          />
+                        );
+                      })}
+                    </div>
+
                   </div>
                 </div>
               )}
+
 
               {/* Key features */}
               {!!product?.description?.length && (
