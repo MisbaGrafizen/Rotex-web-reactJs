@@ -359,6 +359,8 @@ import { useLocation, useParams } from "react-router-dom";
 import Header from "../../component/Header";
 import { ApiGet, ApiPost } from "../../helper/axios";
 import CartDrawer from "../../component/otherFolder/CartDrawer";
+import ProductSpecifications from "../../component/ProductDetails/Productspecifications"
+import TechnicalDetails from "../../component/ProductDetails/Technicaldetails"
 
 export default function Productdetails() {
   // --- route / state params ---
