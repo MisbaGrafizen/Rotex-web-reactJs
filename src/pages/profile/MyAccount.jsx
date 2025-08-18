@@ -1,26 +1,30 @@
 
 import { useState, react } from "react"
-
 import {
-    User,
-    Package,
-    Heart,
-    Download,
-    Eye,
-    Edit2,
-    Phone,
-    Mail,
-    MapPin,
-    LogOut,
-    Star,
-    ShoppingCart,
-    Trash2,
+  User,
+  Package,
+  Heart,
+  Download,
+  Eye,
+  Edit2,
+  Phone,
+  Mail,
+  MapPin,
+  LogOut,
+  Star,
+  ShoppingCart,
+  Trash2,
+  Wrench,
+  AlertCircle,
 } from "lucide-react"
 import main from "../../../public/images/productDetails/main.jpg"
 
 
 import { Link } from "react-router-dom"
 import Header from "../../component/Header"
+import RegisterWarranty from "../../component/myAccount/RegisterWarranty"
+import QuickFix from "../../component/myAccount/Quickfix"
+import NewComplaint from "../../component/myAccount/new-complaint"
 
 export default function MyAccount() {
     const [activeTab, setActiveTab] = useState("profile")
@@ -114,11 +118,15 @@ export default function MyAccount() {
         },
     ]
 
-    const tabs = [
-        { id: "profile", label: "Profile", icon: User },
-        { id: "orders", label: "My Orders", icon: Package },
-        { id: "wishlist", label: "My Wishlist", icon: Heart },
-    ]
+  const tabs = [
+    { id: "profile", label: "Profile", icon: User },
+    { id: "wishlist", label: "My Wishlist", icon: Heart },
+
+    { id: "orders", label: "My Orders", icon: Package },
+    { id: "warranty", label: "Register Warranty", icon: Edit2 },
+    { id: "quickfix", label: "Quick Fix", icon: Wrench },
+    { id: "complaint", label: "New Complaint", icon: AlertCircle },
+  ]
 
     const getStatusColor = (status) => {
         switch (status.toLowerCase()) {
@@ -145,20 +153,20 @@ export default function MyAccount() {
                     <div className="bg-white rounded-2xl shadow-xl md11:w-[71%] overflow-hidden">
                         {/* Tab Navigation */}
                         <div className="border-b border-gray-200">
-                            <nav className="flex space-x-8 px-8 pt-6">
+                            <nav className="flex space-x-7 px-8 pt-6">
                                 {tabs.map((tab) => {
                                     const Icon = tab.icon
                                     return (
                                         <button
                                             key={tab.id}
                                             onClick={() => setActiveTab(tab.id)}
-                                            className={`flex items-center space-x-2 pb-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${activeTab === tab.id
+                                            className={`flex items-center space-x-1 pb-3 px- border-b-2 font-medium text-sm transition-colors duration-200 ${activeTab === tab.id
                                                 ? "border-[#025da8] text-[#025da8]"
                                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                                                 }`}
                                         >
-                                            <Icon className="w-5 h-5" />
-                                            <span>{tab.label}</span>
+                                            <Icon className="w-4 h-4" />
+                                            <span className=" text-[13px]">{tab.label}</span>
                                         </button>
                                     )
                                 })}
@@ -186,25 +194,25 @@ export default function MyAccount() {
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         {/* Personal Information */}
-                                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6">
+                                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4">
                                             <h3 className="text-xl font-semibold text-gray-900 mb-6">Personal Details</h3>
                                             <div className="space-y-4">
-                                                <div className="flex items-center space-x-3">
-                                                    <User className="w-5 h-5 text-[#025da8]" />
+                                                <div className="flex  space-x-3">
+                                                    <User className="w-5 h-5 mt-[3px] text-[#025da8]" />
                                                     <div>
                                                         <p className="text-sm text-gray-500">Full Name</p>
                                                         <p className="font-medium text-gray-900">{userProfile.name}</p>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center space-x-3">
-                                                    <Mail className="w-5 h-5 text-[#025da8]" />
+                                                <div className="flex   space-x-3">
+                                                    <Mail className="w-5 h-5 mt-[1px] text-[#025da8]" />
                                                     <div>
                                                         <p className="text-sm text-gray-500">Email Address</p>
                                                         <p className="font-medium text-gray-900">{userProfile.email}</p>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center space-x-3">
-                                                    <Phone className="w-5 h-5 text-[#025da8]" />
+                                                <div className="flex  space-x-3">
+                                                    <Phone className="w-5 h-5 mt-[3px] text-[#025da8]" />
                                                     <div>
                                                         <p className="text-sm text-gray-500">Phone Number</p>
                                                         <p className="font-medium text-gray-900">{userProfile.phone}</p>
@@ -214,7 +222,7 @@ export default function MyAccount() {
                                         </div>
 
                                         {/* Address Information */}
-                                        <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-xl p-6">
+                                        <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-xl p-4 border">
                                             <h3 className="text-xl font-semibold text-gray-900 mb-6">Address Information</h3>
                                             <div className="flex items-start space-x-3">
                                                 <MapPin className="w-5 h-5 text-[#025da8] mt-1" />
@@ -456,6 +464,17 @@ export default function MyAccount() {
                                     )}
                                 </div>
                             )}
+
+
+
+                              {/* Register Warranty Tab */}
+            {activeTab === "warranty" && <RegisterWarranty />}
+
+            {/* Quick Fix Tab */}
+            {activeTab === "quickfix" && <QuickFix />}
+
+            {/* New Complaint Tab */}
+            {activeTab === "complaint" && <NewComplaint />}
                         </div>
                     </div>
                     <div className="w-[330px]  bg-white border  min-h-[500px] rounded-[15px]">
