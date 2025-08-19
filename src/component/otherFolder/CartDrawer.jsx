@@ -1,7 +1,515 @@
+// // CartDrawer.jsx
+// import { useEffect, useMemo, useState } from "react";
+// import { ArrowLeft, Tag, CreditCard, Truck, Shield, Check, X, Star, Lock, Award, Clock } from "lucide-react"
+// import { useNavigate } from "react-router-dom";
+
+// const fmtINR = (n) => Number(n || 0).toLocaleString("en-IN");
+
+// const COLOR_NAMES = {
+//   "#dddcdc": "White",
+//   "#363636": "Matte Black",
+//   "#4b3933": "Chocolate Brown",
+//   "#dfdfdf": "White and Grey",
+//   "#311d1c": "Brown",
+//   "#191919": "Black",
+//   "#505a65": "Black and Grey",
+//   "#d2cabb": "Ivory",
+//   "#996a5a": "Dark Shade",
+//   "#b89455": "Light Shade",
+//   "#d4dadb": "Star White",
+//   "#e2e4e5": "Pearl White",
+//   "#3b2424": "Metalic Brown",
+//   "#ce9e4c": "Antique Ivory",
+//   "#735140": "Wood Ivory",
+//   "#213d5d": "Blue Ocean",
+//   "#2d2d2b": "Black and Gold",
+// };
+
+// const isHex = (val) => /^#([0-9a-f]{6}|[0-9a-f]{3})$/i.test(String(val || "").trim());
+
+// const normalizeHex = (val) => {
+//   if (!val) return "";
+//   let v = String(val).trim().toLowerCase();
+
+//   // add "#" if user passed plain 6-digit hex like "E2E4E5"
+//   if (/^[0-9a-f]{6}$/.test(v)) v = `#${v}`;
+
+//   // expand 3-digit hex like "#abc" -> "#aabbcc"
+//   if (/^#[0-9a-f]{3}$/.test(v)) {
+//     v = `#${v[1]}${v[1]}${v[2]}${v[2]}${v[3]}${v[3]}`;
+//   }
+//   return v;
+// };
+
+// const resolveColorName = (lineItem) => {
+//   if (!lineItem) return "";
+
+//   // Prefer explicit human name if provided
+//   const explicit = lineItem.colorName && String(lineItem.colorName).trim();
+//   if (explicit) return explicit;
+
+//   // Try hex mapping (support both colorHex and color fields)
+//   const hex1 = normalizeHex(lineItem.colorHex);
+//   const hex2 = normalizeHex(lineItem.color);
+
+//   return COLOR_NAMES[hex1] || COLOR_NAMES[hex2] || "";
+// };
+
+// const applyAmountTypeDiscount = (subtotal, coupon) => {
+//   if (!coupon) return subtotal;
+//   const { amountType, amount } = coupon;
+//   if (amountType === "flat") {
+//     return Math.max(Number(subtotal) - Number(amount || 0), 0);
+//   }
+//   if (amountType === "percentage") {
+//     const d = (Number(subtotal) * Number(amount || 0)) / 100;
+//     return Math.max(Number(subtotal) - d, 0);
+//   }
+//   return subtotal;
+// };
+
+// export default function CartDrawer({
+//   open,
+//   onClose,
+//   lineItem,          // { id, title, price, image, colorName, colorHex, quantity }
+//   onQtyChange,       // (qty) => void
+//   onProceed,         // () => void
+// }) {
+//   const [qty, setQty] = useState(lineItem?.quantity || 1);
+//   const navigate = useNavigate()
+//   const [errors, setErrors] = useState({})
+//   const [couponCode, setCouponCode] = useState("")
+
+//   const [couponError, setCouponError] = useState("")
+//   useEffect(() => {
+//     if (!open) return;
+//     document.body.style.overflow = "hidden";
+//     return () => (document.body.style.overflow = "");
+//   }, [open]);
+
+//   useEffect(() => {
+//     setQty(lineItem?.quantity || 1);
+//   }, [lineItem]);
+
+//   const subtotal = useMemo(() => (lineItem?.price || 0) * qty, [lineItem, qty]);
+
+//   const dec = () => {
+//     const next = Math.max(1, qty - 1);
+//     setQty(next);
+//     onQtyChange?.(next);
+//   };
+//   const inc = () => {
+//     const next = qty + 1;
+//     setQty(next);
+//     onQtyChange?.(next);
+//   };
+
+//   // unit prices from the line item
+//   const unitPrice = Number(lineItem?.price || 0);
+//   const unitMrp = Number(lineItem?.mrp || 0);
+
+//   // % OFF only when MRP is valid and greater than price
+//   const percentOff = useMemo(() => {
+//     if (unitMrp > unitPrice && unitMrp > 0) {
+//       return Math.round(((unitMrp - unitPrice) / unitMrp) * 100);
+//     }
+//     return 0;
+//   }, [unitMrp, unitPrice]);
+
+
+//   const handleBackdrop = (e) => {
+//     if (e.target === e.currentTarget) onClose?.();
+//   };
+
+//   const [appliedCoupon, setAppliedCoupon] = useState(null)
+
+
+//   const availableCoupons = [
+//     {
+//       code: "SAVE200",
+//       discount: 200,
+//       type: "flat",
+//       minOrder: 2000,
+//       title: "Flat ₹200 Off",
+//       description: "On orders offer for above ₹2000",
+//       color: "from-blue-500 to-blue-600",
+//     },
+//     {
+//       code: "WELCOME15",
+//       discount: 15,
+//       type: "percentage",
+//       minOrder: 1000,
+//       title: "15% Off",
+//       description: "Welcome offer for new users",
+//       color: "from-green-500 to-green-600",
+//     },]
+
+
+//   const removeCoupon = () => {
+//     setAppliedCoupon(null);
+//     setCouponError("");
+//   };
+
+//   // Verify against your API: POST https://server.grafizen.in/api/v2/rotex/admin/verify
+//   const applyCoupon = async () => {
+//     setCouponError("");
+//     const code = (couponCode || "").trim().toUpperCase();
+//     if (!code) return setCouponError("Enter a coupon code");
+
+//     const categoryIds = Array.isArray(lineItem?.categoryIds) ? lineItem.categoryIds : [];
+//     if (!categoryIds.length) return setCouponError("No product categories found to verify coupon.");
+
+//     try {
+//       setCouponLoading(true);
+//       const res = await ApiPost("https://server.grafizen.in/api/v2/rotex/admin/verify", {
+//         couponCode: code,
+//         categoryIds, // IMPORTANT: your server validates by coupon.categories vs categoryIds
+//       });
+
+//       // Expected shape (based on your earlier code):
+//       // { valid: boolean, message?: string, coupon?: { couponCode, amountType, amount, minOrder? } }
+//       if (!res?.valid) {
+//         setAppliedCoupon(null);
+//         return setCouponError(res?.message || "Coupon not valid for this product.");
+//       }
+
+//       const sub = calculateSubtotal();
+//       if (res?.coupon?.minOrder && sub < Number(res.coupon.minOrder)) {
+//         setAppliedCoupon(null);
+//         return setCouponError(`Minimum order value ₹${fmtINR(res.coupon.minOrder)} required.`);
+//       }
+
+//       setAppliedCoupon(res.coupon);
+//       setCouponCode("");
+//     } catch (e) {
+//       console.error(e);
+//       setAppliedCoupon(null);
+//       setCouponError(e?.message || "Failed to verify coupon.");
+//     } finally {
+//       setCouponLoading(false);
+//     }
+//   };
+
+//   const calculateSubtotal = () => {
+
+//   }
+
+//    const calculateDiscount = () => {
+//     if (!appliedCoupon) return 0;
+//     const sub = calculateSubtotal();
+//     const after = applyAmountTypeDiscount(sub, appliedCoupon);
+//     return Math.max(sub - after, 0);
+//   };
+
+//   const calculateTotal = () => {
+//     const sub = calculateSubtotal();
+//     const shipping = sub > 2000 ? 0 : 100; // your original rule
+//     const discount = calculateDiscount();
+//     return sub + shipping - discount;
+//   };
+//   const displayColorName = lineItem?.colorName || "";
+//   const swatchHex = lineItem?.colorHex || "";
+
+
+//   console.log('displayColorName', displayColorName);
+  
+//   const handleNavigate = () => {
+//   navigate("/checkout", {
+//     state: {
+//       lineItem: {
+//         ...lineItem,
+//         quantity: qty,
+//       },
+//       coupon: appliedCoupon || null,
+//     },
+//   });
+// };
+
+//   return (
+//     <div
+//       className={`fixed inset-0 font-Poppins z-[100] ${open ? "pointer-events-auto" : "pointer-events-none"}`}
+//       onClick={handleBackdrop}
+//       aria-hidden={!open}
+//     >
+//       <div className={`absolute inset-0 bg-black/50 transition-opacity ${open ? "opacity-100" : "opacity-0"}`} />
+//       <aside
+//         className={`absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl
+//         transition-transform duration-200 ease-out ${open ? "translate-x-0" : "translate-x-full"}`}
+//         role="dialog"
+//         aria-modal="true"
+//       >
+//         {/* Header */}
+//         <div className="flex items-center justify-between px-4 h-16 border-b">
+//           <div className="flex items-center gap-3">
+//             <div className="w-9 h-9 rounded-full bg-[#025da8] grid place-items-center">
+//               <i className="fa-solid fa-cart-shopping text-white text-[14px]" />
+//             </div>
+//             <h3 className="text-lg font-semibold">Added to Cart</h3>
+//           </div>
+//           <button onClick={onClose} aria-label="Close" className="p-2 w-[40px] h-[40px] rounded-full hover:bg-gray-100">✕</button>
+//         </div>
+
+//         {/* Content */}
+//         <div className="p-4 space-y-10 overflow-y-auto h-[55vh]">
+//           {lineItem ? (
+//             <>
+//               {/* <div className="flex items-start border rounded-[10px] shadow-sm border-[#025da857] p-[13px] gap-4">
+//               <div className="w-[100px] h-[100px] rounded-lg overflow-hidden bg-gray-50 flex-shrink-0">
+//                 <img src={lineItem.image} alt={lineItem.title} className="w-full h-full object-contain" />
+//               </div>
+
+//               <div className="flex-1">
+//                 <h4 className="text-[15px] font-[600] text-gray-900 leading-5 line-clamp-2">
+//                   {lineItem.title}
+//                 </h4>
+
+//                 {(swatchHex || displayColorName) && (
+//                   <div className="mt-2 flex items-center gap-2">
+//                     {swatchHex && (
+//                       <span
+//                         className="inline-block w-4 h-4 rounded-full ring-1 ring-gray-300"
+//                         style={{ backgroundColor: swatchHex }}
+//                         title={displayColorName || "Color"}
+//                       />
+//                     )}
+//                     {displayColorName && (
+//                       <span className="text-[12px] font-[500] text-gray-600">
+//                         {displayColorName}
+//                       </span>
+//                     )}
+//                   </div>
+//                 )}
+
+
+//                 <div className="mt-3 flex items-center gap-4">
+//                   <div className="flex items-center border rounded-md">
+//                     <button
+//                       onClick={dec}
+//                       className="w-9 h-8 grid place-items-center text-gray-700 hover:bg-gray-50"
+//                       aria-label="Decrease quantity"
+//                     >
+//                       –
+//                     </button>
+//                     <input
+//                       readOnly
+//                       value={qty}
+//                       className="w-12 h-8  text-[14px] font-[500] text-center border-x outline-none"
+//                     />
+//                     <button
+//                       onClick={inc}
+//                       className="w-9 h-8 grid place-items-center text-gray-700 hover:bg-gray-50"
+//                       aria-label="Increase quantity"
+//                     >
+//                       +
+//                     </button>
+//                   </div>
+
+//                   <div className="ml-auto  gap-[10px]  items-center flex text-right">
+//                     <div className="text-sm text-gray-500">Price: </div>
+//                     <div className="text-[18px] font-semibold text-gray-900">
+//                       ₹{fmtINR(lineItem.price)}
+//                     </div>
+//                   </div>
+//                 </div>
+
+
+//               </div>
+//             </div> */}
+
+//               <div
+
+//                 className=" items-start  p-4 border-[1.3px] border-blue-100 rounded-xl bg-gradient-to-br from-white to-blue-50/30 hover:shadow-lg transition-all duration-300"
+//               >
+//                 <div className="flex gap-[20px] ">
+
+
+//                   <img
+//                     src={lineItem.image || "/placeholder.svg"}
+//                     alt={lineItem.name}
+//                     className="w-20 h-20 border object-cover rounded-xl shadow-md"
+//                   />
+//                   <div className="flex-1">
+//                     <h3 className="font-[600] text-slate-900  leading-[19px] mb-1">{lineItem.title}</h3>
+//                     <p className="text-[13px] text-slate-600 mb-1">{lineItem.description}</p>
+
+//                     {/* <div className="mt-2 flex items-center gap-2">
+//                   <span
+//                     className="inline-block w-4 h-4 rounded-full ring-1 ring-gray-300"
+//                     style={{ backgroundColor: lineItem.colorHex }}
+//                     title={lineItem.colorName}
+//                   />
+//                   <span className="text-[12px] font-[500] text-gray-600">{lineItem.colorName}</span>
+//                 </div> */}
+//                   </div>
+//                 </div>
+//                 <div className=" flex flex-col ">
+//                   <div className="flex items-center  space-x-4 text-sm text-slate-600">
+
+//                     <div className="mt-1 flex items-center gap-4">
+//                       <div className="flex items-center border rounded-md">
+//                         <button
+//                           onClick={dec}
+//                           className="w-9 h-8 grid place-items-center text-gray-700 hover:bg-gray-50"
+//                           aria-label="Decrease quantity"
+//                         >
+//                           –
+//                         </button>
+//                         <input
+//                           readOnly
+//                           value={qty}
+//                           className="w-12 h-8  text-[14px] font-[500] text-center border-x outline-none"
+//                         />
+//                         <button
+//                           onClick={inc}
+//                           className="w-9 h-8 grid place-items-center text-gray-700 hover:bg-gray-50"
+//                           aria-label="Increase quantity"
+//                         >
+//                           +
+//                         </button>
+//                       </div>
+//                     </div>
+//                     <div className="ml-auto   pt-[3px] gap-[10px]  items-center flex text-right">
+//                       {/* <div className="text-sm text-gray-500">Price: </div> */}
+//                       <div className="text-[18px] font-semibold text-gray-900">
+//                         ₹{fmtINR(unitPrice)}
+//                       </div>
+
+//                       {unitMrp > unitPrice && (
+//                         <>
+//                           <span className="text-sm text-slate-500 line-through">
+//                             ₹{fmtINR(unitMrp)}
+//                           </span>
+//                           {percentOff > 0 && (
+//                             <span className="text-[13px] text-green-600 font-[600] bg-green-100 px-2 py-1 rounded-lg">
+//                               {percentOff}% off
+//                             </span>
+//                           )}
+//                         </>
+//                       )}
+//                     </div>
+
+//                   </div>
+//                   {/* <div className="flex items-center space-x-3">
+//                     <span className="text-xl font-[600] text-slate-900">₹{lineItem.salePrice.toLocaleString()}</span>
+//                     <span className="text-sm text-slate-500 line-through">
+//                       ₹{lineItem.originalPrice.toLocaleString()}
+//                     </span>
+//                     <span className="text-[13px] text-green-600 font-[600] bg-green-100 px-2 py-1 rounded-lg">
+//                       {lineItem.discount}% off
+//                     </span>
+//                   </div> */}
+//                 </div>
+//               </div>
+//             </>
+//           ) : (
+//             <div className="text-center text-gray-600">No items in the cart.</div>
+//           )}
+//         </div>
+
+//         <div className="flex items-center px-[20px]  border-b justify-between">
+//           <span className="text-sm text-gray-500">Subtotal</span>
+//           <span className="text-[18px] font-semibold text-gray-900">₹{fmtINR(subtotal)}</span>
+//         </div>
+
+//         <div className="p-3 border-blue-100">
+//           {/* <div className="flex items-center mb-3">
+//                                         <Tag className="w-6 h-6 mr-3" style={{ color: "#025da8" }} />
+//                                         <span className="font-[600] text-slate-900">Available Coupons</span>
+//                                     </div> */}
+
+//           {appliedCoupon ? (
+//             <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-emerald-50 border-[1.4px] border-green-200 rounded-xl">
+//               <div className="flex items-center">
+//                 <Check className="w-6 h-6 text-green-600 mr-3" />
+//                 <div>
+//                   <p className="font-[600] text-green-800">{appliedCoupon.code}</p>
+//                   <p className="text-[12px] text-green-600 font-medium">
+//                     {appliedCoupon.type === "flat"
+//                       ? `₹${appliedCoupon.discount} off`
+//                       : `${appliedCoupon.discount}% off`}
+//                   </p>
+//                 </div>
+//               </div>
+//               <button
+//                 onClick={removeCoupon}
+//                 className="text-green-600 hover:text-green-800 hover:bg-green-100 p-2 rounded-lg transition-all duration-300"
+//               >
+//                 <X className="w-5 h-5" />
+//               </button>
+//             </div>
+//           ) : (
+//             <div className="space-y-4">
+//               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+//                 {availableCoupons.map((coupon) => (
+//                   <div
+//                     key={coupon.code}
+//                     onClick={() => {
+//                       const subtotal = calculateSubtotal()
+//                       if (subtotal >= coupon.minOrder) {
+//                         setAppliedCoupon(coupon)
+//                         setCouponError("")
+//                       } else {
+//                         setCouponError(`Minimum order value ₹${coupon.minOrder} required for ${coupon.code}`)
+//                       }
+//                     }}
+//                     className={`relative p-4 rounded-lg border-[1.3px] cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${calculateSubtotal() >= coupon.minOrder
+//                       ? "border-blue-200 hover:border-blue-400 bg-gradient-to-br from-white to-blue-50"
+//                       : "border-gray-200 hover:border-blue-400 bg-gradient-to-br from-white to-blue-50"
+//                       }`}
+//                   >
+//                     <div
+//                       className={`absolute top-2 right-3 w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-[600] bg-gradient-to-r ${coupon.color}`}
+//                     >
+//                       <Tag className="w-4 h-4" />
+//                     </div>
+//                     <div className="pr-10">
+//                       <div className="font-[600] text-[14px] text-slate-900 ">{coupon.title}</div>
+//                       <div className="text-[10px] text-slate-600 mb-2">{coupon.description}</div>
+//                       <div className="text-xs font-mono border bg-gray-100 px-2 py-1 rounded text-gray-700 inline-block">
+//                         {coupon.code}
+//                       </div>
+//                       {calculateSubtotal() < coupon.minOrder && (
+//                         <div className="text-xs text-red-500 mt-1">Min. order: ₹{coupon.minOrder}</div>
+//                       )}
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+//               {couponError && (
+//                 <p className="text-sm text-red-600 font-medium bg-red-50 p-2 rounded-lg">{couponError}</p>
+//               )}
+
+
+//             </div>
+//           )}
+//         </div>
+
+//         <div className="flex items-center px-[20px]  justify-between">
+//           <span className="text-sm text-gray-500">Subtotal</span>
+//           <span className="text-[18px] font-semibold text-gray-900">₹{fmtINR(subtotal)}</span>
+//         </div>
+
+
+//         {/* Sticky Footer */}
+//         <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-white">
+//           <button
+//             onClick={handleNavigate}
+//             className="w-full h-12 rounded-md bg-[#025da8] hover:opacity-95 transition font-semibold text-white"
+//           >
+//             Proceed to Checkout
+//           </button>
+//         </div>
+//       </aside>
+//     </div>
+//   );
+// }
+
+
 // CartDrawer.jsx
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Tag, CreditCard, Truck, Shield, Check, X, Star, Lock, Award, Clock } from "lucide-react"
+import { Tag, Check, X, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ApiGet, ApiPost } from "../../helper/axios"; // <-- adjust path if needed
 
 const fmtINR = (n) => Number(n || 0).toLocaleString("en-IN");
 
@@ -26,32 +534,21 @@ const COLOR_NAMES = {
 };
 
 const isHex = (val) => /^#([0-9a-f]{6}|[0-9a-f]{3})$/i.test(String(val || "").trim());
-
 const normalizeHex = (val) => {
   if (!val) return "";
   let v = String(val).trim().toLowerCase();
-
-  // add "#" if user passed plain 6-digit hex like "E2E4E5"
-  if (/^[0-9a-f]{6}$/.test(v)) v = `#${v}`;
-
-  // expand 3-digit hex like "#abc" -> "#aabbcc"
+  if (/^[0-9a-f]{6}$/.test(v)) v = `#${v}`; // add missing '#'
   if (/^#[0-9a-f]{3}$/.test(v)) {
     v = `#${v[1]}${v[1]}${v[2]}${v[2]}${v[3]}${v[3]}`;
   }
   return v;
 };
-
 const resolveColorName = (lineItem) => {
   if (!lineItem) return "";
-
-  // Prefer explicit human name if provided
   const explicit = lineItem.colorName && String(lineItem.colorName).trim();
   if (explicit) return explicit;
-
-  // Try hex mapping (support both colorHex and color fields)
   const hex1 = normalizeHex(lineItem.colorHex);
   const hex2 = normalizeHex(lineItem.color);
-
   return COLOR_NAMES[hex1] || COLOR_NAMES[hex2] || "";
 };
 
@@ -68,19 +565,59 @@ const applyAmountTypeDiscount = (subtotal, coupon) => {
   return subtotal;
 };
 
+/** ---------- API ENDPOINTS ---------- */
+const COUPONS_URL = "/coupons";
+const VERIFY_URL  = "/verify";
+
+/** Normalize a coupon from backend -> shape your UI expects */
+const normalizeCoupon = (raw, idx = 0) => {
+  if (!raw) return null;
+  const id = raw._id || raw.id || "";
+  const startDate = raw.startDate ? new Date(raw.startDate) : null;
+  const endDate   = raw.endDate ? new Date(raw.endDate) : null;
+  // keep both naming styles so your UI works without design changes
+  return {
+    id,
+    name: raw.name || "",
+    title: raw.name || "",                     // used by card UI
+    code: raw.couponCode || raw.code || "",    // used by UI
+    couponCode: raw.couponCode || raw.code || "",
+    amountType: raw.amountType || raw.type || "flat",
+    amount: Number(raw.amount ?? raw.discount ?? 0),
+    // UI still uses .type/.discount in a couple places, keep aliases:
+    type: raw.amountType || raw.type || "flat",
+    discount: Number(raw.amount ?? raw.discount ?? 0),
+    minOrder: Number(raw.minOrder || 0),
+    image: raw.image || "",
+    startDate,
+    endDate,
+    categories: Array.isArray(raw.categories)
+      ? raw.categories.map((c) => (typeof c === "string" ? c : c?.$oid || c?._id || String(c)))
+      : [],
+    // just to match your gradient badge; alternate for variety
+    color: idx % 2 === 0 ? "from-blue-500 to-blue-600" : "from-green-500 to-green-600",
+    // small helper text
+    description: endDate ? `Valid till ${endDate.toLocaleDateString("en-GB")}` : "Limited time offer",
+  };
+};
+
 export default function CartDrawer({
   open,
   onClose,
-  lineItem,          // { id, title, price, image, colorName, colorHex, quantity }
+  lineItem,          // { id|productId, title, price, image, colorName, colorHex, quantity, ... }
   onQtyChange,       // (qty) => void
   onProceed,         // () => void
 }) {
   const [qty, setQty] = useState(lineItem?.quantity || 1);
-  const navigate = useNavigate()
-  const [errors, setErrors] = useState({})
-  const [couponCode, setCouponCode] = useState("")
+  const navigate = useNavigate();
+  const [couponError, setCouponError] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponLoading, setCouponLoading] = useState(false);
 
-  const [couponError, setCouponError] = useState("")
+  // NEW: fetched coupons
+  const [coupons, setCoupons] = useState([]);
+  const [loadingCoupons, setLoadingCoupons] = useState(false);
+
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
@@ -91,7 +628,10 @@ export default function CartDrawer({
     setQty(lineItem?.quantity || 1);
   }, [lineItem]);
 
-  const subtotal = useMemo(() => (lineItem?.price || 0) * qty, [lineItem, qty]);
+  /** Subtotal for this drawer (single line item * qty) */
+  const unitPrice = Number(lineItem?.price || 0);
+  const unitMrp   = Number(lineItem?.mrp || 0);
+  const subtotal  = useMemo(() => unitPrice * qty, [unitPrice, qty]);
 
   const dec = () => {
     const next = Math.max(1, qty - 1);
@@ -103,12 +643,6 @@ export default function CartDrawer({
     setQty(next);
     onQtyChange?.(next);
   };
-
-  // unit prices from the line item
-  const unitPrice = Number(lineItem?.price || 0);
-  const unitMrp = Number(lineItem?.mrp || 0);
-
-  // % OFF only when MRP is valid and greater than price
   const percentOff = useMemo(() => {
     if (unitMrp > unitPrice && unitMrp > 0) {
       return Math.round(((unitMrp - unitPrice) / unitMrp) * 100);
@@ -116,85 +650,14 @@ export default function CartDrawer({
     return 0;
   }, [unitMrp, unitPrice]);
 
-
   const handleBackdrop = (e) => {
     if (e.target === e.currentTarget) onClose?.();
   };
 
-  const [appliedCoupon, setAppliedCoupon] = useState(null)
+  /** Helper used by discount calcs */
+  const calculateSubtotal = () => subtotal;
 
-
-  const availableCoupons = [
-    {
-      code: "SAVE200",
-      discount: 200,
-      type: "flat",
-      minOrder: 2000,
-      title: "Flat ₹200 Off",
-      description: "On orders offer for above ₹2000",
-      color: "from-blue-500 to-blue-600",
-    },
-    {
-      code: "WELCOME15",
-      discount: 15,
-      type: "percentage",
-      minOrder: 1000,
-      title: "15% Off",
-      description: "Welcome offer for new users",
-      color: "from-green-500 to-green-600",
-    },]
-
-
-  const removeCoupon = () => {
-    setAppliedCoupon(null);
-    setCouponError("");
-  };
-
-  // Verify against your API: POST https://server.grafizen.in/api/v2/rotex/admin/verify
-  const applyCoupon = async () => {
-    setCouponError("");
-    const code = (couponCode || "").trim().toUpperCase();
-    if (!code) return setCouponError("Enter a coupon code");
-
-    const categoryIds = Array.isArray(lineItem?.categoryIds) ? lineItem.categoryIds : [];
-    if (!categoryIds.length) return setCouponError("No product categories found to verify coupon.");
-
-    try {
-      setCouponLoading(true);
-      const res = await ApiPost("https://server.grafizen.in/api/v2/rotex/admin/verify", {
-        couponCode: code,
-        categoryIds, // IMPORTANT: your server validates by coupon.categories vs categoryIds
-      });
-
-      // Expected shape (based on your earlier code):
-      // { valid: boolean, message?: string, coupon?: { couponCode, amountType, amount, minOrder? } }
-      if (!res?.valid) {
-        setAppliedCoupon(null);
-        return setCouponError(res?.message || "Coupon not valid for this product.");
-      }
-
-      const sub = calculateSubtotal();
-      if (res?.coupon?.minOrder && sub < Number(res.coupon.minOrder)) {
-        setAppliedCoupon(null);
-        return setCouponError(`Minimum order value ₹${fmtINR(res.coupon.minOrder)} required.`);
-      }
-
-      setAppliedCoupon(res.coupon);
-      setCouponCode("");
-    } catch (e) {
-      console.error(e);
-      setAppliedCoupon(null);
-      setCouponError(e?.message || "Failed to verify coupon.");
-    } finally {
-      setCouponLoading(false);
-    }
-  };
-
-  const calculateSubtotal = () => {
-
-  }
-
-   const calculateDiscount = () => {
+  const calculateDiscount = () => {
     if (!appliedCoupon) return 0;
     const sub = calculateSubtotal();
     const after = applyAmountTypeDiscount(sub, appliedCoupon);
@@ -203,27 +666,114 @@ export default function CartDrawer({
 
   const calculateTotal = () => {
     const sub = calculateSubtotal();
-    const shipping = sub > 2000 ? 0 : 100; // your original rule
+    const shipping = sub > 2000 ? 0 : 100; // your rule
     const discount = calculateDiscount();
     return sub + shipping - discount;
   };
-  const displayColorName = lineItem?.colorName || "";
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponError("");
+  };
+
+  /** ---------- FETCH ALL COUPONS (ApiGet) ---------- */
+  useEffect(() => {
+    if (!open) return; // fetch when drawer opens
+    let mounted = true;
+    (async () => {
+      setLoadingCoupons(true);
+      setCouponError("");
+      try {
+        const res = await ApiGet(COUPONS_URL);
+        // Allow several shapes:
+        // { coupons: [...] } or { data: { coupons: [...] } } or direct array
+        const rawList =
+          res?.data?.coupons ??
+          res?.coupons ??
+          (Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []);
+        const normalized = rawList.map((c, i) => normalizeCoupon(c, i)).filter(Boolean);
+
+        // Keep only date-active coupons (optional; remove this filter if you want truly "all")
+        const now = new Date();
+        const active = normalized.filter((c) => {
+          const okStart = !c.startDate || now >= c.startDate;
+          const okEnd = !c.endDate || now <= c.endDate;
+          return okStart && okEnd;
+        });
+
+        if (mounted) setCoupons(active);
+      } catch (err) {
+        console.error("Fetch coupons failed:", err);
+        if (mounted) setCoupons([]); // silently show none
+      } finally {
+        if (mounted) setLoadingCoupons(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [open]);
+
+  /** ---------- CLICK CARD TO APPLY (verifies on server) ---------- */
+  const productIdForCoupon =
+    lineItem?.productId || lineItem?.id || lineItem?._id || "";
+
+  const handleApplyCardCoupon = async (coupon) => {
+    if (!coupon?.code) return;
+    setCouponError("");
+
+    if (!productIdForCoupon) {
+      setCouponError("Cannot verify coupon: missing product id.");
+      return;
+    }
+
+    try {
+      setCouponLoading(true);
+      const res = await ApiPost(VERIFY_URL, {
+        couponCode: coupon.code,
+        categoryIds: [String(productIdForCoupon)], // your backend expects array
+      });
+
+      if (!res?.data?.valid && !res?.valid) {
+        const msg = res?.data?.message || res?.message || "Coupon not valid for this product.";
+        setAppliedCoupon(null);
+        setCouponError(msg);
+        return;
+      }
+
+      // choose the coupon from response (if provided), else use the card coupon
+      const serverCoupon = res?.data?.coupon || res?.coupon || coupon;
+      const normalized = normalizeCoupon(serverCoupon);
+
+      // optional minOrder check
+      if (normalized.minOrder && subtotal < Number(normalized.minOrder)) {
+        setAppliedCoupon(null);
+        setCouponError(`Minimum order value ₹${fmtINR(normalized.minOrder)} required.`);
+        return;
+      }
+
+      setAppliedCoupon(normalized);
+    } catch (e) {
+      console.error("Verify coupon error:", e);
+      setAppliedCoupon(null);
+      setCouponError(e?.message || "Failed to verify coupon.");
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const displayColorName = lineItem?.colorName || resolveColorName(lineItem) || "";
   const swatchHex = lineItem?.colorHex || "";
 
-
-  console.log('displayColorName', displayColorName);
-  
   const handleNavigate = () => {
-  navigate("/checkout", {
-    state: {
-      lineItem: {
-        ...lineItem,
-        quantity: qty,
+    navigate("/checkout", {
+      state: {
+        lineItem: {
+          ...lineItem,
+          quantity: qty,
+        },
+        coupon: appliedCoupon || null, // pass along
       },
-      coupon: appliedCoupon || null,
-    },
-  });
-};
+    });
+  };
 
   return (
     <div
@@ -252,36 +802,21 @@ export default function CartDrawer({
         {/* Content */}
         <div className="p-4 space-y-10 overflow-y-auto h-[55vh]">
           {lineItem ? (
-            <>
-              {/* <div className="flex items-start border rounded-[10px] shadow-sm border-[#025da857] p-[13px] gap-4">
-              <div className="w-[100px] h-[100px] rounded-lg overflow-hidden bg-gray-50 flex-shrink-0">
-                <img src={lineItem.image} alt={lineItem.title} className="w-full h-full object-contain" />
+            <div className="items-start  p-4 border-[1.3px] border-blue-100 rounded-xl bg-gradient-to-br from-white to-blue-50/30 hover:shadow-lg transition-all duration-300">
+              <div className="flex gap-[20px] ">
+                <img
+                  src={lineItem.image || "/placeholder.svg"}
+                  alt={lineItem.name}
+                  className="w-20 h-20 border object-cover rounded-xl shadow-md"
+                />
+                <div className="flex-1">
+                  <h3 className="font-[600] text-slate-900  leading-[19px] mb-1">{lineItem.title}</h3>
+                  <p className="text-[13px] text-slate-600 mb-1">{lineItem.description}</p>
+                </div>
               </div>
 
-              <div className="flex-1">
-                <h4 className="text-[15px] font-[600] text-gray-900 leading-5 line-clamp-2">
-                  {lineItem.title}
-                </h4>
-
-                {(swatchHex || displayColorName) && (
-                  <div className="mt-2 flex items-center gap-2">
-                    {swatchHex && (
-                      <span
-                        className="inline-block w-4 h-4 rounded-full ring-1 ring-gray-300"
-                        style={{ backgroundColor: swatchHex }}
-                        title={displayColorName || "Color"}
-                      />
-                    )}
-                    {displayColorName && (
-                      <span className="text-[12px] font-[500] text-gray-600">
-                        {displayColorName}
-                      </span>
-                    )}
-                  </div>
-                )}
-
-
-                <div className="mt-3 flex items-center gap-4">
+              <div className="flex items-center  space-x-4 text-sm text-slate-600 mt-2">
+                <div className="mt-1 flex items-center gap-4">
                   <div className="flex items-center border rounded-md">
                     <button
                       onClick={dec}
@@ -303,104 +838,28 @@ export default function CartDrawer({
                       +
                     </button>
                   </div>
-
-                  <div className="ml-auto  gap-[10px]  items-center flex text-right">
-                    <div className="text-sm text-gray-500">Price: </div>
-                    <div className="text-[18px] font-semibold text-gray-900">
-                      ₹{fmtINR(lineItem.price)}
-                    </div>
-                  </div>
                 </div>
 
-
-              </div>
-            </div> */}
-
-              <div
-
-                className=" items-start  p-4 border-[1.3px] border-blue-100 rounded-xl bg-gradient-to-br from-white to-blue-50/30 hover:shadow-lg transition-all duration-300"
-              >
-                <div className="flex gap-[20px] ">
-
-
-                  <img
-                    src={lineItem.image || "/placeholder.svg"}
-                    alt={lineItem.name}
-                    className="w-20 h-20 border object-cover rounded-xl shadow-md"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-[600] text-slate-900  leading-[19px] mb-1">{lineItem.title}</h3>
-                    <p className="text-[13px] text-slate-600 mb-1">{lineItem.description}</p>
-
-                    {/* <div className="mt-2 flex items-center gap-2">
-                  <span
-                    className="inline-block w-4 h-4 rounded-full ring-1 ring-gray-300"
-                    style={{ backgroundColor: lineItem.colorHex }}
-                    title={lineItem.colorName}
-                  />
-                  <span className="text-[12px] font-[500] text-gray-600">{lineItem.colorName}</span>
-                </div> */}
+                <div className="ml-auto   pt-[3px] gap-[10px]  items-center flex text-right">
+                  <div className="text-[18px] font-semibold text-gray-900">
+                    ₹{fmtINR(unitPrice)}
                   </div>
-                </div>
-                <div className=" flex flex-col ">
-                  <div className="flex items-center  space-x-4 text-sm text-slate-600">
 
-                    <div className="mt-1 flex items-center gap-4">
-                      <div className="flex items-center border rounded-md">
-                        <button
-                          onClick={dec}
-                          className="w-9 h-8 grid place-items-center text-gray-700 hover:bg-gray-50"
-                          aria-label="Decrease quantity"
-                        >
-                          –
-                        </button>
-                        <input
-                          readOnly
-                          value={qty}
-                          className="w-12 h-8  text-[14px] font-[500] text-center border-x outline-none"
-                        />
-                        <button
-                          onClick={inc}
-                          className="w-9 h-8 grid place-items-center text-gray-700 hover:bg-gray-50"
-                          aria-label="Increase quantity"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                    <div className="ml-auto   pt-[3px] gap-[10px]  items-center flex text-right">
-                      {/* <div className="text-sm text-gray-500">Price: </div> */}
-                      <div className="text-[18px] font-semibold text-gray-900">
-                        ₹{fmtINR(unitPrice)}
-                      </div>
-
-                      {unitMrp > unitPrice && (
-                        <>
-                          <span className="text-sm text-slate-500 line-through">
-                            ₹{fmtINR(unitMrp)}
-                          </span>
-                          {percentOff > 0 && (
-                            <span className="text-[13px] text-green-600 font-[600] bg-green-100 px-2 py-1 rounded-lg">
-                              {percentOff}% off
-                            </span>
-                          )}
-                        </>
+                  {unitMrp > unitPrice && (
+                    <>
+                      <span className="text-sm text-slate-500 line-through">
+                        ₹{fmtINR(unitMrp)}
+                      </span>
+                      {percentOff > 0 && (
+                        <span className="text-[13px] text-green-600 font-[600] bg-green-100 px-2 py-1 rounded-lg">
+                          {percentOff}% off
+                        </span>
                       )}
-                    </div>
-
-                  </div>
-                  {/* <div className="flex items-center space-x-3">
-                    <span className="text-xl font-[600] text-slate-900">₹{lineItem.salePrice.toLocaleString()}</span>
-                    <span className="text-sm text-slate-500 line-through">
-                      ₹{lineItem.originalPrice.toLocaleString()}
-                    </span>
-                    <span className="text-[13px] text-green-600 font-[600] bg-green-100 px-2 py-1 rounded-lg">
-                      {lineItem.discount}% off
-                    </span>
-                  </div> */}
+                    </>
+                  )}
                 </div>
               </div>
-            </>
+            </div>
           ) : (
             <div className="text-center text-gray-600">No items in the cart.</div>
           )}
@@ -411,12 +870,8 @@ export default function CartDrawer({
           <span className="text-[18px] font-semibold text-gray-900">₹{fmtINR(subtotal)}</span>
         </div>
 
+        {/* Coupons area (DESIGN UNCHANGED) */}
         <div className="p-3 border-blue-100">
-          {/* <div className="flex items-center mb-3">
-                                        <Tag className="w-6 h-6 mr-3" style={{ color: "#025da8" }} />
-                                        <span className="font-[600] text-slate-900">Available Coupons</span>
-                                    </div> */}
-
           {appliedCoupon ? (
             <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-emerald-50 border-[1.4px] border-green-200 rounded-xl">
               <div className="flex items-center">
@@ -440,46 +895,45 @@ export default function CartDrawer({
           ) : (
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {availableCoupons.map((coupon) => (
-                  <div
-                    key={coupon.code}
-                    onClick={() => {
-                      const subtotal = calculateSubtotal()
-                      if (subtotal >= coupon.minOrder) {
-                        setAppliedCoupon(coupon)
-                        setCouponError("")
-                      } else {
-                        setCouponError(`Minimum order value ₹${coupon.minOrder} required for ${coupon.code}`)
-                      }
-                    }}
-                    className={`relative p-4 rounded-lg border-[1.3px] cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${calculateSubtotal() >= coupon.minOrder
-                      ? "border-blue-200 hover:border-blue-400 bg-gradient-to-br from-white to-blue-50"
-                      : "border-gray-200 hover:border-blue-400 bg-gradient-to-br from-white to-blue-50"
-                      }`}
-                  >
+                {/* Map fetched coupons here */}
+                {loadingCoupons ? (
+                  <div className="col-span-2 text-sm text-gray-500">Loading coupons…</div>
+                ) : coupons.length === 0 ? (
+                  <div className="col-span-2 text-sm text-gray-500">No coupons available.</div>
+                ) : (
+                  coupons.map((coupon, index) => (
                     <div
-                      className={`absolute top-2 right-3 w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-[600] bg-gradient-to-r ${coupon.color}`}
+                      key={coupon.id || index}
+                      // onClick={() => handleApplyCardCoupon(coupon)}
+                      className={`relative p-4 rounded-lg border-[1.3px] cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-lg border-blue-200 hover:border-blue-400 bg-gradient-to-br from-white to-blue-50`}
                     >
-                      <Tag className="w-4 h-4" />
-                    </div>
-                    <div className="pr-10">
-                      <div className="font-[600] text-[14px] text-slate-900 ">{coupon.title}</div>
-                      <div className="text-[10px] text-slate-600 mb-2">{coupon.description}</div>
-                      <div className="text-xs font-mono border bg-gray-100 px-2 py-1 rounded text-gray-700 inline-block">
-                        {coupon.code}
+                      <div
+                        className={`absolute top-2 right-3 w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-[600] bg-gradient-to-r ${coupon.color}`}
+                      >
+                        <Tag className="w-4 h-4" />
                       </div>
-                      {calculateSubtotal() < coupon.minOrder && (
-                        <div className="text-xs text-red-500 mt-1">Min. order: ₹{coupon.minOrder}</div>
-                      )}
+                      <div className="pr-10">
+                        <div className="font-[600] text-[14px] text-slate-900 ">{coupon.title}</div>
+                        <div className="text-[10px] text-slate-600 mb-2">
+                          {coupon.description}
+                        </div>
+                        <div className="text-xs font-mono border bg-gray-100 px-2 py-1 rounded text-gray-700 inline-block">
+                          {coupon.code}
+                        </div>
+                        {coupon.minOrder > 0 && subtotal < coupon.minOrder && (
+                          <div className="text-xs text-red-500 mt-1">
+                            Min. order: ₹{fmtINR(coupon.minOrder)}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
+
               {couponError && (
                 <p className="text-sm text-red-600 font-medium bg-red-50 p-2 rounded-lg">{couponError}</p>
               )}
-
-
             </div>
           )}
         </div>
@@ -489,14 +943,14 @@ export default function CartDrawer({
           <span className="text-[18px] font-semibold text-gray-900">₹{fmtINR(subtotal)}</span>
         </div>
 
-
         {/* Sticky Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-white">
           <button
             onClick={handleNavigate}
             className="w-full h-12 rounded-md bg-[#025da8] hover:opacity-95 transition font-semibold text-white"
+            disabled={couponLoading}
           >
-            Proceed to Checkout
+            {couponLoading ? "Applying…" : "Proceed to Checkout"}
           </button>
         </div>
       </aside>
