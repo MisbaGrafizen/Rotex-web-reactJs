@@ -1983,6 +1983,9 @@ background-color: #175a2d;
   /* background-image: url(/public/imges/dashBoard/widget-bg.png); */
  
 }
+.shadow-rotex{
+  box-shadow: 7px 7px 0px #03498b , 7px 0px 0px #0988ff00;
+}
 
 .anime-dotted-ln-svg {
   position: absolute;

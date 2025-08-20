@@ -15,6 +15,7 @@ import AllProduct from "./pages/product/AllProduct";
 import Productdetails from "./pages/product/Productdetails";
 import CheckoutPage from "./pages/product/CheckoutPage";
 import MyAccount from "./pages/profile/MyAccount";
+import ContactPage from "./pages/contactUs/ContactUs";
 
 
 
@@ -47,6 +48,8 @@ function App() {
           <Route path="/product-details/:title" element={<Productdetails />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/my-account" element={<MyAccount />} />
+          <Route path="/contact-us" element={<ContactPage />} />
+
 
 
 
