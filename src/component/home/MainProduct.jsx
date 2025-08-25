@@ -674,7 +674,7 @@ const normalizeProduct = (p) => {
   console.log('products', products)
 
   return (
-    <section className="w-[90%] mx-auto pb-[100px]">
+    <section className="w-[90%] mx-auto">
       <div className="mx-auto px-4">
         <h2 className="text-3xl font-[600] text-gray-800 mb-5">Smart Fan Highlights</h2>
 

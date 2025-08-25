@@ -28,6 +28,7 @@ import {
 import Header from "../../component/Header"
 import FloatingInput from "../../component/otherFolder/FloatingInput"
 import FloatingTextarea from "../../component/otherFolder/FloatingTextarea"
+import Footer from "../../component/Footer"
 
 export default function ContactUs() {
     const [formData, setFormData] = useState({
@@ -593,6 +594,8 @@ export default function ContactUs() {
 
             
             </main>
+
+            <Footer />
         </div>
     )
 }

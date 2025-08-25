@@ -18,6 +18,8 @@ import MyAccount from "./pages/profile/MyAccount";
 import ContactPage from "./pages/contactUs/ContactUs";
 import BlogMainPage from "./pages/blogs/BlogMainPage";
 import AboutUs from "./pages/aboutUs/AboutUs";
+import PrivacyPolicy from "./pages/privacyTerms/PrivacyPolicy";
+import Terms from "./pages/privacyTerms/Terms";
 
 
 
@@ -53,6 +55,10 @@ function App() {
           <Route path="/contact-us" element={<ContactPage />} />
           <Route path="/blogs" element={<BlogMainPage />} />
           <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms&conditions" element={<Terms />} />
+
+
 
 
 

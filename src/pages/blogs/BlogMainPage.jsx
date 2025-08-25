@@ -1,5 +1,6 @@
 import React from 'react'
 import Header from '../../component/Header'
+import Footer from '../../component/Footer';
 
 export default function BlogMainPage() {
 
@@ -203,6 +204,9 @@ export default function BlogMainPage() {
                 </div>
           
 
-            </section></>
+            </section>
+            
+            
+            <Footer /></>
   )
 }

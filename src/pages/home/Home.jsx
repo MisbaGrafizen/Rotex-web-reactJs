@@ -4,6 +4,8 @@ import Herosection from '../../component/home/Herosection'
 import Discover from '../../component/home/Discover'
 import FetureProduct from '../../component/home/FetureProduct'
 import MainProduct from '../../component/home/MainProduct'
+import Footer from '../../component/Footer'
+import Blogs from '../../component/home/Blogs'
 
 export default function Home() {
   return (
@@ -16,7 +18,9 @@ export default function Home() {
         <FetureProduct />
         <MainProduct />
 
+<Blogs />
       </div>
+      <Footer /> 
     </>
   )
 }
