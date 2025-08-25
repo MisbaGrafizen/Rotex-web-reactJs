@@ -1,0 +1,208 @@
+import React from 'react'
+import Header from '../../component/Header'
+
+export default function BlogMainPage() {
+
+    const filteredBlogs = [
+  {
+    id: 1,
+    image: "https://via.placeholder.com/800x400.png?text=Rotex+Ceiling+Fan",
+    date: "2025-08-01",
+    time: "10:00 AM",
+    disatnce: "Rotex Premium Series",
+    tittle: "Top 5 Benefits of Rotex Ceiling Fans",
+    description: "Rotex fans are known for their energy efficiency, quiet operation, and elegant design. Learn why they’re a great choice for your home.",
+    route: "/blogs/rotex-ceiling-fans"
+  },
+  {
+    id: 2,
+    image: "https://via.placeholder.com/800x400.png?text=BDC+Fan+Technology",
+    date: "2025-07-25",
+    time: "2:15 PM",
+    disatnce: "BDC Innovation",
+    tittle: "How BDC Fans Are Revolutionizing Airflow",
+    description: "Discover the cutting-edge technology behind BDC motors in modern fans, offering better control, longer life, and superior airflow.",
+    route: "/blogs/bdc-fan-tech"
+  },
+  {
+    id: 3,
+    image: "https://via.placeholder.com/800x400.png?text=Designer+Fans",
+    date: "2025-07-10",
+    time: "9:30 AM",
+    disatnce: "Stylish Interiors",
+    tittle: "Designer Fans That Match Modern Aesthetics",
+    description: "Explore a range of decorative fans by Rotex that blend functionality with fashion, perfect for smart, modern homes.",
+    route: "/blogs/designer-fans"
+  },
+  {
+    id: 4,
+    image: "https://via.placeholder.com/800x400.png?text=Rotex+vs+Generic",
+    date: "2025-06-20",
+    time: "11:45 AM",
+    disatnce: "Fan Comparison",
+    tittle: "Rotex vs Generic Ceiling Fans – Which One Wins?",
+    description: "We compare the performance, build, and cost of Rotex fans with standard brands. See why Rotex leads in value and innovation.",
+    route: "/blogs/rotex-vs-generic"
+  }
+];
+
+  return (
+   <>
+   <Header />
+       <section className=' select-none flex  mb-[40px] flex-col gap-[30px] 2xl:w-[1300px]  relative font-Poppins justify-between w-[90%] mx-auto md:w-[78%] pt-[110px]  '>
+                <div className='md:text-[14px] text-[12px] md:px-0 px-[10px] font-[500] flex w-[100%] overflow-x-auto gap-[10px]'>
+                   
+                </div>
+                <div className=' flex w-[100%] gap-[20px] justify-between'>
+
+
+                    <div className=' flex-col gap-[20px]  flex md:w-[74%]'>
+
+
+
+                        {/* {categoryBlogs?.map((blog, index) => (
+                            <div key={blog.id} className=' flex flex-col gap-[10px] '>
+                                <img
+                                    onClick={() => openLightbox(index)}
+                                    className='cursor-pointer flex w-[100%] h-[240px] md:h-[400px] rounded-[8px] transition-transform duration-300 ease-in-out scale-[0.98] hover:scale-[1]'
+                                    src={blog.image}
+                                    alt="Blogs"
+                                />
+                                <div className=' px-[10px] text-[14px] items-center  flex text-[#025da8] gap-[10px]'>
+                                    <i class="fa-regular mb-[2px] text-[16px] fa-calendar-days"></i>
+                                    {formatDateTime(blog.createdAt)}
+                                </div>
+                                <div className=' flex w-[100%] md:flex-row flex-col  justify-between md:items-end  gap-[14px]'>
+                                    <div className=' flex w-[100%] gap-[10px] flex-col '>
+                                        <div className=' cursor-default flex items-center gap-[10px]  px-[10px] text-[#025da8] '>
+
+                                            <p className=' gap-[10px] mt-[2px] flex'>
+                                                <b className=' text-[18px] font-[400]'>{blog.disatnce} </b>
+                                            </p>
+                                        </div>
+                                        <div className=' text-[15px] flex text-justify  px-[10px] md:w-[98%]'>
+                                           <div
+  className="prose prose-sm md:prose-base prose-headings:font-semibold prose-p:mb-4"
+  dangerouslySetInnerHTML={{ __html: blog.description }}
+></div>
+
+                                        </div>
+                                    </div>
+                                    <button className='flex gap-[10px] cursor-pointer pr-[10px] text-[#025da8] w-[150px] items-center'
+                                      onClick={() => navigate(`/blogs/main/${blog._id}`)}>
+                                        <p className='hover:underline'>Read More</p>
+                                        <i className="fa-regular fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                                <span className=' flex w-[100%] border-t-[1.3px] border-[#025da8] mt-[20px] border-dashed '>
+
+                                </span>
+                            </div>
+                        ))} */}
+
+                        {/* 0ld Blogsss */}
+                        {filteredBlogs.map((blog, index) => (
+                            <div key={blog.id} className=' flex flex-col gap-[10px] '>
+                                <img
+                                    onClick={() => openLightbox(index)}
+                                    className='cursor-pointer flex w-[100%] h-[240px] md:h-[400px] rounded-[8px] transition-transform duration-300 ease-in-out scale-[0.98] hover:scale-[1]'
+                                    src={blog.image}
+                                    alt="Blogs"
+                                />
+                                <div className=' px-[10px] text-[14px] items-center  flex text-[#025da8] gap-[10px]'>
+                                    <i class="fa-regular mb-[2px] text-[16px] fa-calendar-days"></i>
+                                    {blog.date} - {blog.time}
+                                </div>
+                                <div className=' flex w-[100%] md:flex-row flex-col  justify-between md:items-end  gap-[14px]'>
+                                    <div className=' flex w-[100%] gap-[10px] flex-col '>
+                                        <div className=' cursor-default flex items-center gap-[10px]  px-[10px] text-[#025da8] '>
+
+                                            <p className=' gap-[10px] mt-[2px] flex'>
+                                                <b className=' text-[18px] font-[400]'>{blog.disatnce} </b>
+                                            </p>
+                                        </div>
+                                        <h1 className=' px-[10px] font-[500] text-[19px]'>
+                                            {blog.tittle}
+                                        </h1>
+                                        <div className=' text-[15px] flex text-justify  px-[10px] md:w-[98%]'>
+                                            <p>
+                                                {blog.description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <button className='flex gap-[10px] cursor-pointer pr-[10px] text-[#025da8] w-[150px] items-center' onClick={() => handleBlogDetails(blog.route)}>
+                                        <p className='hover:underline'>Read More</p>
+                                        <i className="fa-regular fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                                <span className=' flex w-[100%] border-t-[1.3px] border-[#025da8] mt-[20px] border-dashed '>
+
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+
+<div className="h-fit max-w-[300px] right-[10%] border border-[#025da8] md:flex hidden bg-white shadow p-4 rounded-[10px]">
+  <div className="w-full">
+    {/* 🔍 Search */}
+    <div className="flex justify-between border p-2 rounded-[8px]">
+      <input
+        type="text"
+        className="w-full text-sm outline-none"
+        placeholder="Search"
+      />
+      <button className="pl-2" type="submit">
+        <svg
+          width="16"
+          height="16"
+          fill="none"
+          viewBox="0 0 16 16"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M15.682 14.318L12.025 10.662C12.722 9.719 13.111 8.563 13.111 7.333C13.111 3.868 10.244 1 6.778 1C3.312 1 0.444 3.868 0.444 7.333C0.444 10.798 3.312 13.666 6.778 13.666C8.008 13.666 9.163 13.277 10.106 12.579L13.762 16.236C13.975 16.448 14.311 16.448 14.524 16.236L15.681 15.08C15.894 14.868 15.894 14.533 15.682 14.318ZM6.778 11.889C4.347 11.889 2.222 9.763 2.222 7.333C2.222 4.902 4.347 2.777 6.778 2.777C9.208 2.777 11.333 4.902 11.333 7.333C11.333 9.763 9.208 11.889 6.778 11.889Z"
+            fill="#025da8"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    {/* 👥 Influencer Guests */}
+    <div className="mt-6">
+      <h5 className="text-lg font-semibold text-black pb-2">Featured Dealers</h5>
+      <p className="text-gray-600 text-sm">Coming Soon . . .</p>
+    </div>
+
+    {/* 📝 Popular Blogs */}
+    <div className="mt-6">
+      <h5 className="text-lg font-semibold text-black pb-2">Rotex Blogs</h5>
+      <ul className="space-y-2 text-sm text-[#5c5b5b]">
+        {[
+          { title: "Why Rotex Fans Are Best for Indian Homes", link: "/blogs/rotex-fans-benefits" },
+          { title: "Top 5 Rotex Ceiling Fans for 2025", link: "/blogs/top-ceiling-fans-rotex" },
+          { title: "BDC Motor vs Normal Fan Motor – What's Better?", link: "/blogs/bdc-vs-normal-fan" },
+          { title: "Energy Savings with Rotex BDC Technology", link: "/blogs/rotex-energy-saving" },
+          { title: "How to Choose the Right Fan for Each Room", link: "/blogs/fan-buying-guide" },
+          { title: "The Evolution of Smart Fans – Rotex Edition", link: "/blogs/rotex-smart-fans" },
+          { title: "Wall vs Pedestal Fans: What Suits You Best?", link: "/blogs/fan-types-comparison" },
+          { title: "Maintaining Your Rotex Fan – Tips & Tricks", link: "/blogs/rotex-fan-maintenance" },
+          { title: "What Makes Rotex BDC Fans So Silent?", link: "/blogs/rotex-silent-tech" },
+          { title: "Rotex Airflow Technology Explained", link: "/blogs/rotex-airflow-design" },
+        ].map((item, i) => (
+          <li key={i} className="flex items-start">
+            <i className="fa-solid fa-circle text-[6px] text-[#025da8] mr-2 mt-[6px]"></i>
+            <a href={item.link} className="hover:underline">{item.title}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+                </div>
+          
+
+            </section></>
+  )
+}

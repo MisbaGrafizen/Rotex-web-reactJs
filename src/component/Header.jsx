@@ -109,7 +109,7 @@
 //                                 </div>
 //                             </div>
 
-                           
+
 //                             <div className="flex items-center space-x-6">
 //                                 <div
 //                                     className="relative"
@@ -231,7 +231,7 @@
 import { useEffect, useState } from "react";
 import logo from "../../public/images/Logo/moveLogo.gif";
 import LoginDrawer from "../component/LoginDrawer";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const LOCAL_USER_ID_KEY = "auth_user_id";
 
@@ -298,7 +298,7 @@ export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [selectedPage, setSelectedPage] = useState("New Products");
   const [loginOpen, setLoginOpen] = useState(false);
-
+const location = useLocation();
   // ↓ track auth by localStorage user id
   const [userId, setUserId] = useState(() => {
     try {
@@ -341,11 +341,17 @@ export default function Header() {
       localStorage.removeItem(LOCAL_USER_ID_KEY);
       // if you also store profile, clear it:
       localStorage.removeItem("auth_user_profile");
-    } catch {}
+    } catch { }
     setUserId("");
     navigate("/");
   };
-
+  
+  const navItems = [
+  { label: "Home", path: "/" },
+  { label: "About Us", path: "/about-us" },
+  { label: "Blogs", path: "/blogs" },
+  { label: "Contact Us", path: "/contact-us" },
+];
   return (
     <header className="fixed top-0 pl-[60px] font-Poppins flex flex-col w-[100%] h-[90px] shadow-xl left-0 right-0 z-50 bg-[#fafafa]">
       <div className="flex gap-[10px] items-center w-[100%] border-gray-200">
@@ -379,19 +385,34 @@ export default function Header() {
               </div>
 
               <div className="flex items-center space-x-6">
-                {/* Mega menu trigger (kept your current behavior) */}
-                <div className="relative">
+               <div className="flex w-[100%] pt-[3px] gap-[20px]">
+  {navItems.map((item) => (
+    <button
+      key={item.path}
+      onClick={() => navigate(item.path)}
+      className={`font-[500] text-[13px] ${
+        location.pathname === item.path
+          ? "text-[#025da8] font-semibold"
+          : "text-gray-700 hover:text-[#025da8]"
+      }`}
+    >
+      {item.label}
+    </button>
+  ))}
+  </div>
+          
+                <div className="relative ">
+
                   <button
                     className="flex items-center flex-shrink-0 min-w-[130px] space-x-1 text-gray-700 hover:text-[#025da8] transition-colors duration-200 text-[12px] font-[500]"
                     onClick={() =>
                       setActiveDropdown((d) => (d === "Search by Category" ? null : "Search by Category"))
                     }
                   >
-                    <span>Search by Category</span>
+                    <span className=" flex-shrink-0">Search by Category</span>
                     <svg
-                      className={`w-4 h-4 transition-transform duration-300 ease-in-out ${
-                        activeDropdown === "Search by Category" ? "rotate-180" : "rotate-0"
-                      }`}
+                      className={`w-4 h-4 transition-transform duration-300 ease-in-out ${activeDropdown === "Search by Category" ? "rotate-180" : "rotate-0"
+                        }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -401,11 +422,10 @@ export default function Header() {
                   </button>
 
                   <div
-                    className={`absolute top-full left-0 w-screen max-w-6xl bg-white shadow-xl border border-gray-200 mt-1 -ml-96 rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform ${
-                      activeDropdown === "Search by Category"
-                        ? "opacity-100 translate-y-0 scale-100 visible"
-                        : "opacity-0 -translate-y-4 scale-95 invisible"
-                    }`}
+                    className={`absolute top-full left-0 w-screen max-w-6xl bg-white shadow-xl border border-gray-200 mt-1 -ml-96 rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform ${activeDropdown === "Search by Category"
+                      ? "opacity-100 translate-y-0 scale-100 visible"
+                      : "opacity-0 -translate-y-4 scale-95 invisible"
+                      }`}
                   >
                     <div className="grid grid-cols-6 gap-8 p-8">
                       {Object.entries(megaMenuData["Search by Category"]).map(([category, items]) => (
@@ -489,7 +509,7 @@ export default function Header() {
                     localStorage.setItem("auth_user_profile", JSON.stringify(user.profile));
                   }
                 }
-              } catch {}
+              } catch { }
               setUserId(user?._id || "");
               setLoginOpen(false);
               // go straight to My Account after successful login
@@ -518,9 +538,8 @@ export default function Header() {
                         }
                       }
                     }}
-                    className={`font-[500] text-[12px] transition-all duration-200 relative ${
-                      selectedPage === page ? "text-[#025da8]" : "text-gray-700 hover:text-[#025da8]"
-                    }`}
+                    className={`font-[500] text-[12px] transition-all duration-200 relative ${selectedPage === page ? "text-[#025da8]" : "text-gray-700 hover:text-[#025da8]"
+                      }`}
                   >
                     {page}
                   </a>

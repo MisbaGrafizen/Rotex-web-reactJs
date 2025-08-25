@@ -150,7 +150,7 @@ export default function ContactUs() {
 
             <main className=" pt-[100px]">
                 {/* Hero Section */}
-                <section className="bg-gradient-to-br from-[#025da8] to-[#024a8a] rounded-lg w-[80%] mx-auto text-white py-5 relative overflow-hidden">
+                <section className="bg-gradient-to-br from-[#025da8] to-[#024a8a] rounded-lg 2xl:w-[1130px] md11:w-[80%] mx-auto text-white py-5 relative overflow-hidden">
                     <div className="absolute inset-0 bg-black bg-opacity-10"></div>
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="text-center">
@@ -184,7 +184,7 @@ export default function ContactUs() {
                 </section>
 
                 {/* Contact Information & Form Section */}
-                <section className="py-20">
+                <section className="py-20 2xl:w-[1330px] mx-auto md11:w-[80%]">
                     <div className="container mx-auto px-4">
                         <div className="flex gap-10">
                             {/* Contact Information */}

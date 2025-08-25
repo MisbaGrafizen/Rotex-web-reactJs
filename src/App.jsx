@@ -16,6 +16,8 @@ import Productdetails from "./pages/product/Productdetails";
 import CheckoutPage from "./pages/product/CheckoutPage";
 import MyAccount from "./pages/profile/MyAccount";
 import ContactPage from "./pages/contactUs/ContactUs";
+import BlogMainPage from "./pages/blogs/BlogMainPage";
+import AboutUs from "./pages/aboutUs/AboutUs";
 
 
 
@@ -49,6 +51,10 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/my-account" element={<MyAccount />} />
           <Route path="/contact-us" element={<ContactPage />} />
+          <Route path="/blogs" element={<BlogMainPage />} />
+          <Route path="/about-us" element={<AboutUs />} />
+
+
 
 
 

@@ -861,8 +861,8 @@ const LIST_COUPONS_URL = `/coupons`
 const APPLY_COUPON_URL = `/apply`      
 const VERIFY_COUPON_URL = `/verify`     
 
-const CREATE_ORDER_URL = "/api/v2/rotex/create-order"               
-const CREATE_RZP_ORDER_URL = "/api/v2/rotex/create-razorpay-order"  
+const CREATE_ORDER_URL = "/create-order"               
+const CREATE_RZP_ORDER_URL = "/create-razorpay-order"  
 const AUTO_COUPON_CODE = "WqzVdZmG";
 
 

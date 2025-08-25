@@ -3,8 +3,8 @@ import Cookies from 'js-cookie';
 
 
 // export const BaseURL = "http://localhost:8000";
-export const BaseURL = "http://localhost:3000/api/v2/rotex";
-// export const BaseURL = "https://server.grafizen.in/api/v2/rotex";
+// export const BaseURL = "http://localhost:3000/api/v2/rotex";
+export const BaseURL = "https://server.grafizen.in/api/v2/rotex";
 
 const defaultHeaders = {
   isAuth: true,
