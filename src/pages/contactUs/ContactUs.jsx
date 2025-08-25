@@ -29,6 +29,7 @@ import Header from "../../component/Header"
 import FloatingInput from "../../component/otherFolder/FloatingInput"
 import FloatingTextarea from "../../component/otherFolder/FloatingTextarea"
 import Footer from "../../component/Footer"
+import { ApiPost } from "../../helper/axios"
 
 export default function ContactUs() {
     const [formData, setFormData] = useState({
@@ -108,32 +109,41 @@ export default function ContactUs() {
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        if (isSubmitting) return;
+        // if (!validateForm()) return;
 
-        if (!validateForm()) {
-            return
-        }
+        setIsSubmitting(true);
+        try {
+            await ApiPost("/contact-us", {
+                name: formData.name,
+                phone: formData.mobile,
+                email: formData.email,
+                subject: formData.subject,
+                message: formData.message,
+            });
 
-        setIsSubmitting(true)
+            // Show the success UI
+            setIsSubmitted(true);
 
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000))
-
-        setIsSubmitting(false)
-        setIsSubmitted(true)
-
-        // Reset form after 3 seconds
-        setTimeout(() => {
-            setIsSubmitted(false)
+            // Clear the form (optional)
             setFormData({
                 name: "",
                 mobile: "",
                 email: "",
                 subject: "",
                 message: "",
-            })
-        }, 3000)
-    }
+            });
+        } catch (err) {
+            console.error("Contact submit failed:", err);
+            setErrors((prev) => ({
+                ...prev,
+                submit: "Something went wrong. Please try again.",
+            }));
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -200,43 +210,43 @@ export default function ContactUs() {
 
                                 {/* Contact Cards */}
                                 <div className="space-y-3 grid grid-cols">
-                                <div className=" grid justify-end gap-[10px] grid-cols-2">
+                                    <div className=" grid justify-end gap-[10px] grid-cols-2">
 
-                       
-                                    <div className="bg-white rounded-2xl p-4 shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                                        <div className="flex items-start space-x-6">
-                                            <div className="bg-gradient-to-br from-[#025da8] to-[#024a8a] p-2 rounded-[7px]">
-                                                <Phone className="w-6 h-6 text-white" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-xl   font-[600] text-gray-800 mb-">Phone Support</h3>
-                                                {/* <p className="text-gray-600 mb-2 leading-4 text-[14px]">Call us for immediate assistance and expert guidance</p> */}
-                                                <div className="space-y-   mt-[10px]">
-                                                    {/* <p className="text-[#025da8]   font-[500] text-[13px]">+91 1800-103-1800</p> */}
-                                                    <p className="text-[#025da8]   font-[500] text-[13px]">+ 91 9099093903</p>
+
+                                        <div className="bg-white rounded-2xl p-4 shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                                            <div className="flex items-start space-x-6">
+                                                <div className="bg-gradient-to-br from-[#025da8] to-[#024a8a] p-2 rounded-[7px]">
+                                                    <Phone className="w-6 h-6 text-white" />
                                                 </div>
-                                                <p className="text-[11px] font-[500] text-gray-500 mt-">Toll-free numbers available 24/7</p>
+                                                <div>
+                                                    <h3 className="text-xl   font-[600] text-gray-800 mb-">Phone Support</h3>
+                                                    {/* <p className="text-gray-600 mb-2 leading-4 text-[14px]">Call us for immediate assistance and expert guidance</p> */}
+                                                    <div className="space-y-   mt-[10px]">
+                                                        {/* <p className="text-[#025da8]   font-[500] text-[13px]">+91 1800-103-1800</p> */}
+                                                        <p className="text-[#025da8]   font-[500] text-[13px]">+ 91 9099093903</p>
+                                                    </div>
+                                                    <p className="text-[11px] font-[500] text-gray-500 mt-">Toll-free numbers available 24/7</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-white rounded-2xl p-4 shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                                            <div className="flex items-start space-x-6">
+                                                <div className="bg-gradient-to-br from-[#025da8] to-[#024a8a] p-2 rounded-[7px]">
+                                                    <Mail className="w-6 h-6 text-white" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-xl   font-[600] text-gray-800 mb-">Email Support</h3>
+                                                    {/* <p className="text-gray-600 leading-4  mb-2 text-[14px]">Send us your queries and get detailed responses</p> */}
+                                                    <div className=" mt-[10px]">
+                                                        <p className="text-[#025da8]   font-[500] text-[13px]">info@rotexfans.com</p>
+
+                                                    </div>
+                                                    <p className="font-[500] text-gray-500  text-[11px] ">Response within 24 hours</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div className="bg-white rounded-2xl p-4 shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                                        <div className="flex items-start space-x-6">
-                                            <div className="bg-gradient-to-br from-[#025da8] to-[#024a8a] p-2 rounded-[7px]">
-                                                <Mail className="w-6 h-6 text-white" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-xl   font-[600] text-gray-800 mb-">Email Support</h3>
-                                                {/* <p className="text-gray-600 leading-4  mb-2 text-[14px]">Send us your queries and get detailed responses</p> */}
-                                                <div className=" mt-[10px]">
-                                                    <p className="text-[#025da8]   font-[500] text-[13px]">info@rotexfans.com</p>
-                                                 
-                                                </div>
-                                                <p className="font-[500] text-gray-500  text-[11px] ">Response within 24 hours</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                             </div>
 
                                     <div className="bg-white rounded-2xl p-4 shadow-md border border-gray-200  transition-all duration-300 hover:-translate-y-1">
                                         <div className="flex items-start space-x-6">
@@ -247,7 +257,7 @@ export default function ContactUs() {
                                                 <h3 className="text-xl   font-[600] text-gray-800 mb-">Head Office</h3>
                                                 <p className="text-gray-600 mb-2 text-[12px]">Visit our corporate headquarters</p>
                                                 <p className=" text-[#025da8]   font-[500] text-[13px] ">
-                                                Plot No:40-41, Sub Plot : C/D/E, Power Industrial, Near Kothariya <br/>  Railway Station, Dhebar Road, Kothariya Solvant, Rajkot, Gujarat-360002
+                                                    Plot No:40-41, Sub Plot : C/D/E, Power Industrial, Near Kothariya <br />  Railway Station, Dhebar Road, Kothariya Solvant, Rajkot, Gujarat-360002
                                                 </p>
                                             </div>
                                         </div>
@@ -346,7 +356,7 @@ export default function ContactUs() {
                                             <FloatingInput
                                                 label=" Full Name "
                                                 name="name"
-
+                                                value={formData?.name}
                                                 onChange={handleInputChange}
                                                 iconClass="fa-regular fa-user"
                                             />
@@ -376,7 +386,7 @@ export default function ContactUs() {
                                                 type="number"
                                                 id="mobile"
                                                 name="mobile"
-
+                                                value={formData?.mobile}
                                                 onChange={handleInputChange}
                                                 iconClass="fa-regular fa-phone-volume"
                                             />
@@ -405,11 +415,11 @@ export default function ContactUs() {
 
                                             <FloatingInput
                                                 label="Email Address"
-                                                     type="email"
-                                                    id="email"
-                                                    name="email"
-                                                    value={formData.email}
-                                                    onChange={handleInputChange}
+                                                type="email"
+                                                id="email"
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleInputChange}
                                                 iconClass="fa-regular fa-envelope"
                                             />
 
@@ -436,11 +446,11 @@ export default function ContactUs() {
 
                                             <FloatingInput
                                                 label=" Subject"
-                                                      type="text"
-                                                    id="subject"
-                                                    name="subject"
-                                                    // value={formData.subject}
-                                                    onChange={handleInputChange}
+                                                type="text"
+                                                id="subject"
+                                                name="subject"
+                                                value={formData.subject}
+                                                onChange={handleInputChange}
                                                 iconClass="fa-regular fa-layer-group"
                                             />
 
@@ -466,16 +476,16 @@ export default function ContactUs() {
                                         </div> */}
 
 
-                                            <FloatingTextarea
-                                                label=" Message"
+                                        <FloatingTextarea
+                                            label=" Message"
                                             id="message"
-                                                name="message"
-                                                rows={6}
-                                           
-                                                onChange={handleInputChange}
-                                        
-                                                iconClass="fa-regular fa-phone-volume"
-                                            />
+                                            name="message"
+                                            rows={6}
+                                            value={formData?.message}
+                                            onChange={handleInputChange}
+
+                                            iconClass="fa-regular fa-phone-volume"
+                                        />
 
                                         <button
                                             type="submit"
@@ -524,32 +534,32 @@ export default function ContactUs() {
                             </div>
 
                             <div className="text-center bg-white shadow-rotex rounded-2xl border  p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                              <div className="bg-gradient-to-br from-[#025da8] to-[#024a8a] rounded-full w-[60px] h-[60px] flex items-center justify-center mx-auto mb-2">
+                                <div className="bg-gradient-to-br from-[#025da8] to-[#024a8a] rounded-full w-[60px] h-[60px] flex items-center justify-center mx-auto mb-2">
                                     <Headphones className="w-6 h-6 text-white" />
                                 </div>
                                 <h3 className="text-xl   font-[600] text-gray-800 mb-4">24/7 Support</h3>
-                            <p className="text-gray-600 text-[14px]">
+                                <p className="text-gray-600 text-[14px]">
                                     Our dedicated customer support team is available round the clock to assist you with any queries or
                                     concerns.
                                 </p>
                             </div>
 
                             <div className="text-center bg-white shadow-rotex rounded-2xl border  p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                            <div className="bg-gradient-to-br from-[#025da8] to-[#024a8a] rounded-full w-[60px] h-[60px] flex items-center justify-center mx-auto mb-2">
+                                <div className="bg-gradient-to-br from-[#025da8] to-[#024a8a] rounded-full w-[60px] h-[60px] flex items-center justify-center mx-auto mb-2">
                                     <MapPin className="w-6 h-6 text-white" />
                                 </div>
                                 <h3 className="text-xl   font-[600] text-gray-800 mb-4">Pan India Presence</h3>
-                            <p className="text-gray-600 text-[14px]">
+                                <p className="text-gray-600 text-[14px]">
                                     With over 500 service centers across India, we're always close to you when you need us most.
                                 </p>
                             </div>
 
                             <div className="text-center bg-white shadow-rotex rounded-2xl border  p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                            <div className="bg-gradient-to-br from-[#025da8] to-[#024a8a] rounded-full w-[60px] h-[60px] flex items-center justify-center mx-auto mb-2">
+                                <div className="bg-gradient-to-br from-[#025da8] to-[#024a8a] rounded-full w-[60px] h-[60px] flex items-center justify-center mx-auto mb-2">
                                     <Shield className="w-6 h-6 text-white" />
                                 </div>
                                 <h3 className="text-xl   font-[600] text-gray-800 mb-4">Trusted Brand</h3>
-                            <p className="text-gray-600 text-[14px]">
+                                <p className="text-gray-600 text-[14px]">
                                     Trusted by millions of customers worldwide, we've been powering homes and businesses for over six
                                     decades.
                                 </p>
@@ -592,7 +602,7 @@ export default function ContactUs() {
                     </div>
                 </section>
 
-            
+
             </main>
 
             <Footer />

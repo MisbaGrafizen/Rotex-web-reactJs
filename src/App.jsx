@@ -20,7 +20,7 @@ import BlogMainPage from "./pages/blogs/BlogMainPage";
 import AboutUs from "./pages/aboutUs/AboutUs";
 import PrivacyPolicy from "./pages/privacyTerms/PrivacyPolicy";
 import Terms from "./pages/privacyTerms/Terms";
-
+import BlogDetails from "./pages/blogs/BlogDetails";
 
 
 // import { io } from "socket.io-client";
@@ -57,6 +57,7 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms&conditions" element={<Terms />} />
+          <Route path="/blogDetails/:title" element={<BlogDetails />} />
 
 
 

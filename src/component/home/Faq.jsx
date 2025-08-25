@@ -53,7 +53,7 @@ export default function Faq() {
   return (
  <>
 
-                   <section className="pt-20 mb-[50px] bg-white">
+                   <section className="pt-20 font-Poppins mb-[50px] bg-white">
                     <div className="container mx-auto px-4">
                         <div className="text-center mb-7">
                             <h2 className="text-4xl   font-[600] text-gray-800 mb-3">Frequently Asked Questions</h2>
