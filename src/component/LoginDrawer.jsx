@@ -573,7 +573,6 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
-  // server state
   const [authToken, setAuthToken] = useState("");
   const [userId, setUserId] = useState("");
 
@@ -583,7 +582,6 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
       ? "Enter a valid 10-digit Indian mobile number starting with 6–9."
       : "";
 
-  // lock background scroll
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
@@ -592,7 +590,6 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
     };
   }, [open]);
 
-  // reset when opened
   useEffect(() => {
     if (open) {
       setStep("phone");
@@ -608,7 +605,6 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
     }
   }, [open]);
 
-  // resend ticker
   useEffect(() => {
     let t;
     if (step === "otp" && resendIn > 0) {
@@ -617,26 +613,22 @@ export default function LoginDrawer({ open, onClose, onSuccess }) {
     return () => t && clearInterval(t);
   }, [step, resendIn]);
 
-  // ---- API: Send OTP ----
   const sendOtp = async () => {
     if (!validPhone) return;
     setStep("otp");
     try {
       setSending(true);
-      // change URL if yours differs
       await ApiPost("/auth/send-otp", { mobileNumber: `${phone}` });
       setResendIn(30);
       setOtp(Array(6).fill(""));
       setTimeout(() => inputsRef.current?.[0]?.focus(), 50);
     } catch (e) {
       console.error("send-otp failed:", e);
-      // optionally show a toast here
     } finally {
       setSending(false);
     }
   };
 
-  // ---- API: Verify OTP ----
 const verifyOtp = async () => {
   const code = otp.join("");
   if (code.length !== 6) {
@@ -647,25 +639,20 @@ const verifyOtp = async () => {
   try {
     setVerifying(true);
 
-    // If you use a wrapper like ApiPost, keep it. Otherwise use axios.post.
     const { data } = await ApiPost("/auth/verify-otp", {
-      mobileNumber: phone,     // <-- backend expects mobileNumber
+      mobileNumber: phone,   
       otp: code,
     });
 
-    // Expected shape (your sample):
-    // { success, message, userId, user, token }
     if (!data?.token || !data?.userId) {
       alert(data?.message || "Could not verify OTP. Please try again.");
       return;
     }
 
-    // Persist auth
     localStorage.setItem("auth_token", data.token);
     localStorage.setItem("auth_user_id", data.userId);
     if (data.user) localStorage.setItem("auth_user", JSON.stringify(data.user));
 
-    // Decide next step: if user already has name & email, finish; else open details step
     const u = data.user || {};
     const hasName = !!u?.name?.trim?.();
     const hasEmail = !!u?.email && /^\S+@\S+\.\S+$/.test(u.email);
@@ -686,8 +673,6 @@ const verifyOtp = async () => {
   }
 };
 
-
-  // ---- API: Resend OTP (same endpoint as send) ----
   const resend = async () => {
     if (resendIn > 0) return;
     try {
@@ -703,15 +688,12 @@ const verifyOtp = async () => {
     }
   };
 
-  // ---- API: Update profile (if user is new / missing data) ----
 const saveDetails = async () => {
   const nm = name.trim();
   const em = email.trim();
-
   if (!nm) return alert("Please enter your name.");
   if (!/^\S+@\S+\.\S+$/.test(em)) return alert("Please enter a valid email.");
 
-  // ✅ Get userId from localStorage
   const storedUserId = localStorage.getItem("auth_user_id") || null;
   if (!storedUserId) return console.error("Missing userId for profile update.");
 
@@ -720,7 +702,6 @@ const saveDetails = async () => {
   try {
     setVerifying(true);
 
-    // PUT /user/:userId
     const res = await ApiPut(`/auth/user/${storedUserId}`, payload);
 
     const updated =
@@ -729,7 +710,6 @@ const saveDetails = async () => {
       res?.data ||
       {};
 
-    // Merge with existing local user data
     const prevUser = JSON.parse(localStorage.getItem("auth_user") || "{}");
     const mergedUser = {
       ...prevUser,
@@ -756,9 +736,6 @@ const saveDetails = async () => {
   }
 };
 
-
-
-  // ----- OTP inputs handlers -----
   const handleOtpChange = (idx, val) => {
     if (!/^\d?$/.test(val)) return;
     const next = [...otp];
@@ -786,12 +763,10 @@ const saveDetails = async () => {
 
   const otpFilled = useMemo(() => otp.join("").length === 6, [otp]);
 
-  // backdrop close
   const handleBackdrop = (e) => {
     if (e.target === e.currentTarget) onClose();
   };
 
-  // ESC close
   useEffect(() => {
     const onEsc = (e) => e.key === "Escape" && onClose();
     if (open) window.addEventListener("keydown", onEsc);

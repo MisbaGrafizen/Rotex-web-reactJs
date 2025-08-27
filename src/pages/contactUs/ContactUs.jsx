@@ -144,16 +144,20 @@ export default function ContactUs() {
             setIsSubmitting(false);
         }
     };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target
-        setFormData((prev) => ({ ...prev, [name]: value }))
-
-        // Clear error when user starts typing
-        if (errors[name]) {
-            setErrors((prev) => ({ ...prev, [name]: "" }))
-        }
+const handleInputChange = (e, fieldName = null) => {
+  if (typeof e === "string" && fieldName) {
+    setFormData((prev) => ({ ...prev, [fieldName]: e }))
+    if (errors[fieldName]) {
+      setErrors((prev) => ({ ...prev, [fieldName]: "" }))
     }
+  } else {
+    const { name, value } = e?.target || {}
+    setFormData((prev) => ({ ...prev, [name]: value }))
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }))
+    }
+  }
+}
 
     return (
         <div className="font-Poppins bg-gray-50">
@@ -357,7 +361,7 @@ export default function ContactUs() {
                                                 label=" Full Name "
                                                 name="name"
                                                 value={formData?.name}
-                                                onChange={handleInputChange}
+                              onChange={(value) => handleInputChange(value, "name")}
                                                 iconClass="fa-regular fa-user"
                                             />
 
@@ -381,15 +385,17 @@ export default function ContactUs() {
                         {errors.mobile && <p className="text-red-500 text-sm mt-2">{errors.mobile}</p>}
                       </div> */}
 
-                                            <FloatingInput
-                                                label="Mobile Number"
-                                                type="number"
-                                                id="mobile"
-                                                name="mobile"
-                                                value={formData?.mobile}
-                                                onChange={handleInputChange}
-                                                iconClass="fa-regular fa-phone-volume"
-                                            />
+                                   <FloatingInput
+  label="Mobile Number"
+  type="text"
+  name="mobile"
+  value={formData?.mobile}
+  maxLength={10}
+  inputMode="numeric"
+  onChange={(value) => handleInputChange(value, "mobile")}
+  iconClass="fa-regular fa-phone-volume"
+  error={errors.mobile}
+/>
 
                                         </div>
 
@@ -419,7 +425,7 @@ export default function ContactUs() {
                                                 id="email"
                                                 name="email"
                                                 value={formData.email}
-                                                onChange={handleInputChange}
+                                             onChange={(value) => handleInputChange(value, "email")}
                                                 iconClass="fa-regular fa-envelope"
                                             />
 
@@ -450,7 +456,7 @@ export default function ContactUs() {
                                                 id="subject"
                                                 name="subject"
                                                 value={formData.subject}
-                                                onChange={handleInputChange}
+                           onChange={(value) => handleInputChange(value, "subject")}
                                                 iconClass="fa-regular fa-layer-group"
                                             />
 
@@ -484,7 +490,7 @@ export default function ContactUs() {
                                             value={formData?.message}
                                             onChange={handleInputChange}
 
-                                            iconClass="fa-regular fa-phone-volume"
+                                            iconClass="fa-regular fa-message"
                                         />
 
                                         <button
