@@ -26,7 +26,7 @@ export default function Terms() {
       </div>
 
       {/* Content Section */}
-      <div className=" md11:w-[80%] 2xl:w-[1300px] mx-auto px-4 ">
+      <div className=" md11:w-[80%] 2xl:w-[1300px] mx-auto px-[30px] md11:px-4 ">
         {/* Introduction */}
         <div className="mb-12">
           <p className="text-gray-700 leading-relaxed text-lg">

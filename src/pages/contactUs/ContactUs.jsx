@@ -30,6 +30,7 @@ import FloatingInput from "../../component/otherFolder/FloatingInput"
 import FloatingTextarea from "../../component/otherFolder/FloatingTextarea"
 import Footer from "../../component/Footer"
 import { ApiPost } from "../../helper/axios"
+import Faq from "../../component/home/Faq"
 
 export default function ContactUs() {
     const [formData, setFormData] = useState({
@@ -163,9 +164,9 @@ const handleInputChange = (e, fieldName = null) => {
         <div className="font-Poppins bg-gray-50">
             <Header />
 
-            <main className=" pt-[100px]">
+            <main className=" w-[100%] pt-[110px]">
                 {/* Hero Section */}
-                <section className="bg-gradient-to-br from-[#025da8] to-[#024a8a] rounded-lg 2xl:w-[1130px] md11:w-[80%] mx-auto text-white py-5 relative overflow-hidden">
+                <section className="bg-gradient-to-br from-[#025da8] to-[#024a8a] rounded-lg 2xl:w-[1130px] w-[90%] md11:w-[80%] mx-auto text-white py-5 relative overflow-hidden">
                     <div className="absolute inset-0 bg-black bg-opacity-10"></div>
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="text-center">
@@ -199,11 +200,11 @@ const handleInputChange = (e, fieldName = null) => {
                 </section>
 
                 {/* Contact Information & Form Section */}
-                <section className="py-20 2xl:w-[1330px] mx-auto md11:w-[80%]">
-                    <div className="container mx-auto px-4">
-                        <div className="flex gap-10">
+                <section className="py-20 2xl:w-[1330px] mx-auto w-[100%] md11:w-[80%]">
+                    <div className=" mx-auto w-[100%] md77:px-4">
+                        <div className="flex md11:flex-row flex-col w-fit mx-auto  gap-10">
                             {/* Contact Information */}
-                            <div className="space-y-3 w-[60%]">
+                            <div className="space-y-3 mx-auto w-[90%] md77:w-[80%] md11:w-[60%]">
                                 <div>
                                     <h2 className="text-3xl   font-[600] text-gray-800 mb-1">Get In Touch</h2>
                                     <p className="text-[14px] text-gray-600 mb-4">
@@ -213,8 +214,8 @@ const handleInputChange = (e, fieldName = null) => {
                                 </div>
 
                                 {/* Contact Cards */}
-                                <div className="space-y-3 grid grid-cols">
-                                    <div className=" grid justify-end gap-[10px] grid-cols-2">
+                                <div className="space-y-3 grid ">
+                                    <div className=" grid md77:justify-end gap-[10px] md77:grid-cols-2">
 
 
                                         <div className="bg-white rounded-2xl p-4 shadow-md border border-gray-200 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -313,7 +314,7 @@ const handleInputChange = (e, fieldName = null) => {
                             </div>
 
                             {/* Contact Form */}
-                            <div className="bg-white mt-[10px] rounded-3xl h-fit max-w-[550px]  p-7 shadow-xl border border-gray-200">
+                            <div className="bg-white mt-[10px] w-[95%] md77:w-[100%] mx-auto rounded-3xl h-fit max-w-[580px] p-5 md77:p-7 shadow-xl border border-gray-200">
                                 <div className="mb-5">
                                     <h2 className="text-2xl   font-[600] text-gray-800 mb-4 flex items-center">
                                         <MessageCircle className="w-8 h-8 text-[#025da8]  mr-4" />
@@ -337,25 +338,7 @@ const handleInputChange = (e, fieldName = null) => {
                                 ) : (
                                     <form onSubmit={handleSubmit} className="space-y-5">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                            {/* <div>
-                        <label htmlFor="name" className="block text-sm   font-[600] text-gray-700 mb-3">
-                          Full Name *
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          className={`w-full px-6 py-4 border-2 rounded-xl focus:outline-none transition-all duration-200 text-lg ${
-                            errors.name
-                              ? "border-red-300 focus:border-red-500"
-                              : "border-gray-200 focus:border-[#025da8] focus:shadow-lg"
-                          }`}
-                          placeholder="Enter your full name"
-                        />
-                        {errors.name && <p className="text-red-500 text-sm mt-2">{errors.name}</p>}
-                      </div> */}
+                                
 
                                             <FloatingInput
                                                 label=" Full Name "
@@ -365,26 +348,7 @@ const handleInputChange = (e, fieldName = null) => {
                                                 iconClass="fa-regular fa-user"
                                             />
 
-                                            {/* <div>
-                        <label htmlFor="mobile" className="block text-sm   font-[600] text-gray-700 mb-3">
-                          Mobile Number *
-                        </label>
-                        <input
-                          type="tel"
-                          id="mobile"
-                          name="mobile"
-                          value={formData.mobile}
-                          onChange={handleInputChange}
-                          className={`w-full px-6 py-4 border-2 rounded-xl focus:outline-none transition-all duration-200 text-lg ${
-                            errors.mobile
-                              ? "border-red-300 focus:border-red-500"
-                              : "border-gray-200 focus:border-[#025da8] focus:shadow-lg"
-                          }`}
-                          placeholder="Enter your mobile number"
-                        />
-                        {errors.mobile && <p className="text-red-500 text-sm mt-2">{errors.mobile}</p>}
-                      </div> */}
-
+                                 
                                    <FloatingInput
   label="Mobile Number"
   type="text"
@@ -400,25 +364,7 @@ const handleInputChange = (e, fieldName = null) => {
                                         </div>
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                            {/* <div>
-                                                <label htmlFor="email" className="block text-sm   font-[600] text-gray-700 mb-3">
-                                                    Email Address *
-                                                </label>
-                                                <input
-                                                    type="email"
-                                                    id="email"
-                                                    name="email"
-                                                    value={formData.email}
-                                                    onChange={handleInputChange}
-                                                    className={`w-full px-6 py-4 border-2 rounded-xl focus:outline-none transition-all duration-200 text-lg ${errors.email
-                                                            ? "border-red-300 focus:border-red-500"
-                                                            : "border-gray-200 focus:border-[#025da8] focus:shadow-lg"
-                                                        }`}
-                                                    placeholder="Enter your email address"
-                                                />
-                                                {errors.email && <p className="text-red-500 text-sm mt-2">{errors.email}</p>}
-                                            </div> */}
-
+                                           
                                             <FloatingInput
                                                 label="Email Address"
                                                 type="email"
@@ -429,25 +375,6 @@ const handleInputChange = (e, fieldName = null) => {
                                                 iconClass="fa-regular fa-envelope"
                                             />
 
-
-                                            {/* <div>
-                                                <label htmlFor="subject" className="block text-sm   font-[600] text-gray-700 mb-3">
-                                                    Subject *
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    id="subject"
-                                                    name="subject"
-                                                    // value={formData.subject}
-                                                    onChange={handleInputChange}
-                                                    className={`w-full px-6 py-4 border-2 rounded-xl focus:outline-none transition-all duration-200 text-lg ${errors.subject
-                                                            ? "border-red-300 focus:border-red-500"
-                                                            : "border-gray-200 focus:border-[#025da8] focus:shadow-lg"
-                                                        }`}
-                                                    placeholder="Enter message subject"
-                                                />
-                                                {errors.subject && <p className="text-red-500 text-sm mt-2">{errors.subject}</p>}
-                                            </div> */}
 
 
                                             <FloatingInput
@@ -461,25 +388,6 @@ const handleInputChange = (e, fieldName = null) => {
                                             />
 
                                         </div>
-
-                                        {/* <div>
-                                            <label htmlFor="message" className="block text-sm   font-[600] text-gray-700 mb-3">
-                                                Message *
-                                            </label>
-                                            <textarea
-                                                id="message"
-                                                name="message"
-                                                rows={6}
-                                                value={formData.message}
-                                                onChange={handleInputChange}
-                                                className={`w-full px-6 py-4 border-2 rounded-xl focus:outline-none transition-all duration-200 resize-none text-lg ${errors.message
-                                                        ? "border-red-300 focus:border-red-500"
-                                                        : "border-gray-200 focus:border-[#025da8] focus:shadow-lg"
-                                                    }`}
-                                                placeholder="Enter your message here..."
-                                            />
-                                            {errors.message && <p className="text-red-500 text-sm mt-2">{errors.message}</p>}
-                                        </div> */}
 
 
                                         <FloatingTextarea
@@ -517,8 +425,8 @@ const handleInputChange = (e, fieldName = null) => {
                     </div>
                 </section>
 
-                <section className="bg-gradient-to-br from-gray-50 to-white py-">
-                    <div className="container mx-auto px-4">
+                <section className="bg-gradient-to-br mb-[20px] from-gray-50 to-white py-">
+                    <div className=" mx-auto px-4">
                         <div className="text-center mb-6">
                             <h2 className="text-4xl   font-[600] text-gray-800 mb-2">Why Choose Rotex?</h2>
                             <p className="text-[14px] text-gray-600 max-w-4xl mx-auto">
@@ -574,39 +482,7 @@ const handleInputChange = (e, fieldName = null) => {
                     </div>
                 </section>
 
-                <section className="pt-20 mb-[50px] bg-white">
-                    <div className="container mx-auto px-4">
-                        <div className="text-center mb-7">
-                            <h2 className="text-4xl   font-[600] text-gray-800 mb-3">Frequently Asked Questions</h2>
-                            <p className="text-md text-gray-600 max-w-2xl mx-auto">
-                                Find answers to common questions about our products and services
-                            </p>
-                        </div>
-
-                        <div className="max-w-4xl mx-auto space-y-4">
-                            {faqs.map((faq, index) => (
-                                <div key={index} className="bg-gray-50 rounded-2xl border-[0.5px] overflow-hidden shadow-lg">
-                                    <button
-                                        onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                                        className="w-full px-8 py-4 text-left flex items-center justify-between hover:bg-gray-100 transition-colors duration-200"
-                                    >
-                                        <h3 className="text-lg font-semibold text-gray-800 pr-4">{faq.question}</h3>
-                                        {expandedFaq === index ? (
-                                            <Minus className="w-6 h-6 text-[#025da8] flex-shrink-0" />
-                                        ) : (
-                                            <Plus className="w-6 h-6 text-[#025da8] flex-shrink-0" />
-                                        )}
-                                    </button>
-                                    {expandedFaq === index && (
-                                        <div className="px-8 pb-6">
-                                            <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
+          <Faq />
 
 
             </main>

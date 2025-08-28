@@ -354,13 +354,15 @@
 
 
 
-import { useEffect, useMemo, useState } from "react";
+
 import { useLocation, useParams } from "react-router-dom";
 import Header from "../../component/Header";
 import { ApiGet, ApiPost } from "../../helper/axios";
 import CartDrawer from "../../component/otherFolder/CartDrawer";
 import ProductSpecifications from "../../component/ProductDetails/Productspecifications"
 import TechnicalDetails from "../../component/ProductDetails/Technicaldetails"
+import { useState, useEffect , useMemo} from "react";
+import Footer from "../../component/Footer";
 
 export default function Productdetails() {
   // --- route / state params ---
@@ -652,13 +654,13 @@ export default function Productdetails() {
   return (
     <>
       <Header />
-      <div className="min-h-screen font-Poppins pt-[110px]">
-        <div className="w-[90%] mx-auto flex flex-col gap-[70px] px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div className="font-Poppins pt-[80px] md77:pt-[110px]">
+        <div className="md77:w-[90%] mx-auto flex flex-col gap-[70px] px-4 sm:px-6 lg:px-8 py-8">
+          <div className=" flex md11:flex-row flex-col gap-8 ">
             {/* ---------- Gallery ---------- */}
-            <div className="space-y-4 mx-auto">
+            <div className="space-y-4">
               <div className="relative bg-white rounded-2xl w-fit border shadow-lg overflow-hidden group">
-                <div className="min-h-[400px] h-[500px]">
+                <div className="min-h-[300px] h-[350px]">
                   <img
                     src={galleryImages[selectedImage] || "/placeholder.svg"}
                     alt={product?.title || "Product"}
@@ -667,12 +669,12 @@ export default function Productdetails() {
                 </div>
               </div>
 
-              <div className="grid max-w-[500px] grid-cols-6 gap-2">
+              <div className="flex  overflow-x-auto py-[10px] px-[5px] w-[400px] grid-cols-6 gap-2">
                 {galleryImages.map((img, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${selectedImage === index
+                    className={` w-[50px] h-[50px] rounded-lg overflow-hidden border-2 transition-all ${selectedImage === index
                       ? "border-[#025da8bc] ring-2 ring-[#025da87a]"
                       : "border-gray-200 hover:border-gray-300"
                       }`}
@@ -689,7 +691,7 @@ export default function Productdetails() {
             </div>
 
             {/* ---------- Details ---------- */}
-            <div className="space-y-2">
+            <div className="md11:w-[600px] ">
               <div>
                 <div className="flex items-center space-x-2">
                   <span className="bg-green-100 text-green-800 border border-[#0aae02] text-xs font-medium px-2.5 py-0.5 rounded-full">
@@ -702,22 +704,22 @@ export default function Productdetails() {
                   ) : null}
                 </div>
 
-                <h1 className="text-3xl mt-[20px] font-[600] text-gray-900 mb-1">
+                <h1 className=" text-[16px] md77:text-xl mt-[20px] font-[600] text-gray-900 mb-1">
                   {product?.title || nameFromState || "Product"}
                 </h1>
 
                 {!!product?.subTitle && (
-                  <p className="text-gray-600 text-[14px] mb-3">{product.subTitle}</p>
+                  <p className="text-gray-600 text-[14px] mb-2">{product.subTitle}</p>
                 )}
 
-                <div className="flex items-center space-x-4 mb-2">
+                <div className="flex items-center space-x-4 mb-1">
                   {price !== undefined && (
-                    <span className="text-3xl font-[600] text-gray-900">
+                    <span className="text-2xl font-[600] text-gray-900">
                       ₹{px(Number(price))}/-
                     </span>
                   )}
                   {mrp !== undefined && (
-                    <span className="text-xl font-[600] text-gray-500 line-through">
+                    <span className="text-lg font-[600] text-gray-500 line-through">
                       ₹{px(Number(mrp))}/-
                     </span>
                   )}
@@ -729,7 +731,7 @@ export default function Productdetails() {
                 </div>
 
                 {/* simple static rating */}
-                <div className="flex items-center space-x-4 mb-4">
+                <div className="flex items-center space-x-4 mb-2">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
                       <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
@@ -763,7 +765,7 @@ export default function Productdetails() {
                           <button
                             key={v.key}
                             onClick={() => { setSelectedColorKey(v.key); setSelectedImage(0); }}
-                            className={`relative w-10 h-10 rounded-full border-2 transition-all ${selectedColorKey === v.key
+                            className={`relative w-8 h-8 rounded-full border-2 transition-all ${selectedColorKey === v.key
                                 ? "border-[#025da8bc] ring-2 ring-[#025da87a]"
                                 : "border-gray-100 hover:border-gray-400"
                               }`}
@@ -783,10 +785,10 @@ export default function Productdetails() {
               {/* Key features */}
               {!!product?.description?.length && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mt-[20px] mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 mt-[20px] mb-1">
                     Key Features
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
                     {product.description.slice(0, 4).map((line, i) => (
                       <div key={i} className="flex items-center space-x-2">
                         <i className="fa-solid text-[20px] text-[#025da8] fa-circle-check" />
@@ -840,7 +842,7 @@ export default function Productdetails() {
               </div>
 
               {/* Trust indicators */}
-              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200">
+              {/* <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-200">
                 <div className="text-center">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
                     <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
@@ -868,7 +870,7 @@ export default function Productdetails() {
                   <p className="text-sm font-medium text-gray-900">2+1 Warranty</p>
                   <p className="text-xs text-gray-500">Extended protection</p>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -891,6 +893,8 @@ export default function Productdetails() {
           }}
         />
       </div>
+
+      <Footer />
     </>
   );
 }

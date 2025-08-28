@@ -411,7 +411,7 @@ export default function RegisterWarranty() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="md77:flex items-center justify-between">
         <h2 className="text-2xl font-[600] text-gray-900">Register Warranty</h2>
         <p className="text-gray-600 text-[12px]">Activate warranty for your products</p>
       </div>
@@ -430,7 +430,7 @@ export default function RegisterWarranty() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="shadow-xl rounded-xl p-4 border border-gray-200"
+            className="shadow-sm rounded-xl p-4 border border-gray-200"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Product Name */}

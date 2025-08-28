@@ -71,11 +71,13 @@ export default function ProductSpecifications() {
         <h2 className="text-2xl font-semibold text-slate-900 mb-2">Technical Specifications</h2>
         <p className="text-slate-600 text-sm">Detailed product specifications and performance metrics</p>
       </div>
+<div className=" flex overflow-x-auto flex-shrink-0">
 
-      <div className="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+
+      <div className="bg-slate-50 w-[900px] md:w-[100%] rounded-lg flex-shrink-0 border border-slate-200 overflow-x-auto">
         {/* Table Header */}
         <div className="bg-[#025da8] border border-[#025da8] text-white px-6 py-3">
-          <div className="grid grid-cols-4 gap-4 text-[18px] font-[500]">
+          <div className="grid grid-cols-4 gap-4  flex-shrink-0 text-[18px] font-[500]">
             <div>Parameter</div>
             <div>Value</div>
             <div>Unit</div>
@@ -84,7 +86,7 @@ export default function ProductSpecifications() {
         </div>
 
         {/* Table Body */}
-        <div className="divide-y divide-slate-200">
+        <div className="divide-y flex-shrink-0 divide-slate-200">
           {specifications.map((spec, index) => (
             <div
               key={spec.key}
@@ -93,7 +95,7 @@ export default function ProductSpecifications() {
               }`}
               onClick={() => setSelectedSpec(selectedSpec === spec.key ? null : spec.key)}
             >
-              <div className="grid grid-cols-4 gap-4 items-center">
+              <div className="grid grid-cols-4 gap-4 flex-shrink-0 items-center">
                 {/* Parameter */}
                 <div className="flex items-center space-x-3">
                   <div className="text-slate-600">{spec.icon}</div>
@@ -113,7 +115,7 @@ export default function ProductSpecifications() {
           ))}
         </div>
       </div>
-
+</div>
       {/* <div className="mt-8 bg-slate-800 text-white rounded-lg p-6">
         <h3 className="text-lg font-semibold mb-4">Certifications & Standards</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -1,4 +1,3 @@
-// "use client"
 
 // import React, { useEffect } from "react"
 // import { useState } from "react"
@@ -855,14 +854,14 @@ import FloatingInput from "../../component/otherFolder/FloatingInput"
 import FloatingTextarea from "../../component/otherFolder/FloatingTextarea.jsx"
 import Header from "../../component/Header.jsx"
 import logoRotex from "../../../public/images/Logo/image.png"
-import { ApiGet, ApiPost } from "../../helper/axios"  
+import { ApiGet, ApiPost } from "../../helper/axios"
 
-const LIST_COUPONS_URL = `/coupons`     
-const APPLY_COUPON_URL = `/apply`      
-const VERIFY_COUPON_URL = `/verify`     
+const LIST_COUPONS_URL = `/coupons`
+const APPLY_COUPON_URL = `/apply`
+const VERIFY_COUPON_URL = `/verify`
 
-const CREATE_ORDER_URL = "/create-order"               
-const CREATE_RZP_ORDER_URL = "/create-razorpay-order"  
+const CREATE_ORDER_URL = "/create-order"
+const CREATE_RZP_ORDER_URL = "/create-razorpay-order"
 const AUTO_COUPON_CODE = "WqzVdZmG";
 
 
@@ -930,23 +929,23 @@ export default function CheckoutPage() {
   const [orderItems, setOrderItems] = useState(
     lineItemFromState
       ? [
-          {
-            id: lineItemFromState.productId || 1,
-            title: lineItemFromState.title,
-            description: lineItemFromState.description,
-            colorName: lineItemFromState.colorName,
-            quantity: lineItemFromState.quantity,
-            mrp: lineItemFromState.mrp,
-            price: lineItemFromState.price,
-            discount:
-              Math.round(
-                ((lineItemFromState.mrp - lineItemFromState.price) /
-                  lineItemFromState.mrp) *
-                  100
-              ) || 0,
-            image: lineItemFromState.image,
-          },
-        ]
+        {
+          id: lineItemFromState.productId || 1,
+          title: lineItemFromState.title,
+          description: lineItemFromState.description,
+          colorName: lineItemFromState.colorName,
+          quantity: lineItemFromState.quantity,
+          mrp: lineItemFromState.mrp,
+          price: lineItemFromState.price,
+          discount:
+            Math.round(
+              ((lineItemFromState.mrp - lineItemFromState.price) /
+                lineItemFromState.mrp) *
+              100
+            ) || 0,
+          image: lineItemFromState.image,
+        },
+      ]
       : []
   )
 
@@ -963,7 +962,9 @@ export default function CheckoutPage() {
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Invalid email"
     if (!formData.phone.trim()) newErrors.phone = "Phone number is required"
     else if (!/^\d{10}$/.test(formData.phone.replace(/\D/g, ""))) newErrors.phone = "Phone number must be 10 digits"
-    if (!formData.address.trim()) newErrors.address = "Address is required"
+    if (!(formData.address || "").toString().trim()) {
+      newErrors.address = "Address is required";
+    }
     if (!formData.pinCode.trim()) newErrors.pinCode = "PIN code is required"
     else if (!/^\d{6}$/.test(formData.pinCode)) newErrors.pinCode = "PIN code must be 6 digits"
     if (!formData.city.trim()) newErrors.city = "City is required"
@@ -972,9 +973,19 @@ export default function CheckoutPage() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleInputChange = (field, value) => {
-    setFormData((p) => ({ ...p, [field]: value }))
-    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }))
+  const handleInputChange = (e, fieldName = null) => {
+    if (typeof e === "string" && fieldName) {
+      setFormData((prev) => ({ ...prev, [fieldName]: e }))
+      if (errors[fieldName]) {
+        setErrors((prev) => ({ ...prev, [fieldName]: "" }))
+      }
+    } else {
+      const { name, value } = e?.target || {}
+      setFormData((prev) => ({ ...prev, [name]: value }))
+      if (errors[name]) {
+        setErrors((prev) => ({ ...prev, [name]: "" }))
+      }
+    }
   }
 
   /** ---------- totals ---------- */
@@ -1007,19 +1018,19 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     let mounted = true
-    ;(async () => {
-      setLoadingCoupons(true)
-      try {
-        const res = await ApiGet(LIST_COUPONS_URL)
-        const raw = Array.isArray(res?.data) ? res.data : res?.data?.coupons || res?.data?.data || []
-        const normalized = raw.map(normalizeCoupon)
-        if (mounted) setCoupons(normalized)
-      } catch (e) {
-        console.error("Failed to load coupons:", e)
-      } finally {
-        if (mounted) setLoadingCoupons(false)
-      }
-    })()
+      ; (async () => {
+        setLoadingCoupons(true)
+        try {
+          const res = await ApiGet(LIST_COUPONS_URL)
+          const raw = Array.isArray(res?.data) ? res.data : res?.data?.coupons || res?.data?.data || []
+          const normalized = raw.map(normalizeCoupon)
+          if (mounted) setCoupons(normalized)
+        } catch (e) {
+          console.error("Failed to load coupons:", e)
+        } finally {
+          if (mounted) setLoadingCoupons(false)
+        }
+      })()
     return () => { mounted = false }
   }, [])
 
@@ -1040,48 +1051,48 @@ export default function CheckoutPage() {
   }, [coupons, productIdForCoupon])
 
   useEffect(() => {
-  if (userDismissedAuto) return;        // user removed it — respect that
-  if (appliedCoupon) return;            // already have a coupon
-  if (!productIdForCoupon) return;      // no product
-  if (!Array.isArray(coupons) || coupons.length === 0) return;
+    if (userDismissedAuto) return;        // user removed it — respect that
+    if (appliedCoupon) return;            // already have a coupon
+    if (!productIdForCoupon) return;      // no product
+    if (!Array.isArray(coupons) || coupons.length === 0) return;
 
-  // find the special coupon
-  const auto = coupons.find(
-    (c) => (c.code || "").toUpperCase() === AUTO_COUPON_CODE.toUpperCase()
-  );
-  if (!auto) return;
+    // find the special coupon
+    const auto = coupons.find(
+      (c) => (c.code || "").toUpperCase() === AUTO_COUPON_CODE.toUpperCase()
+    );
+    if (!auto) return;
 
-  const now = new Date();
-  const inDate =
-    (!auto.startDate || now >= auto.startDate) &&
-    (!auto.endDate || now <= auto.endDate);
+    const now = new Date();
+    const inDate =
+      (!auto.startDate || now >= auto.startDate) &&
+      (!auto.endDate || now <= auto.endDate);
 
-  const productMatches = auto.categories.includes(String(productIdForCoupon));
+    const productMatches = auto.categories.includes(String(productIdForCoupon));
 
-  const subtotal = calculateSubtotal();
-  const meetsMin = !auto.minOrder || subtotal >= auto.minOrder;
+    const subtotal = calculateSubtotal();
+    const meetsMin = !auto.minOrder || subtotal >= auto.minOrder;
 
-  if (!inDate || !productMatches || !meetsMin) return;
+    if (!inDate || !productMatches || !meetsMin) return;
 
-  (async () => {
-    try {
-      // server-side validation (uses your backend /verify)
-      const res = await ApiPost(VERIFY_COUPON_URL, {
-        couponCode: auto.code,
-        categoryIds: [productIdForCoupon],
-      });
+    (async () => {
+      try {
+        // server-side validation (uses your backend /verify)
+        const res = await ApiPost(VERIFY_COUPON_URL, {
+          couponCode: auto.code,
+          categoryIds: [productIdForCoupon],
+        });
 
-      if (res?.data?.valid) {
-        const normalized = normalizeCoupon(res.data.coupon || auto);
-        setAppliedCoupon(normalized);
-        setCouponError("");
+        if (res?.data?.valid) {
+          const normalized = normalizeCoupon(res.data.coupon || auto);
+          setAppliedCoupon(normalized);
+          setCouponError("");
+        }
+      } catch (err) {
+        // silent fail; user can still apply manually
+        console.error("Auto-apply verify failed:", err);
       }
-    } catch (err) {
-      // silent fail; user can still apply manually
-      console.error("Auto-apply verify failed:", err);
-    }
-  })();
-}, [coupons, productIdForCoupon, userDismissedAuto, appliedCoupon, orderItems]);
+    })();
+  }, [coupons, productIdForCoupon, userDismissedAuto, appliedCoupon, orderItems]);
 
 
   /** ---------- apply / remove coupons (keeps your design) ---------- */
@@ -1147,11 +1158,11 @@ export default function CheckoutPage() {
   }
 
   const removeCoupon = () => {
-  setAppliedCoupon(null);
-  setCouponCode("");
-  setCouponError("");
-  setUserDismissedAuto(true); // don't auto-apply again this session
-};
+    setAppliedCoupon(null);
+    setCouponCode("");
+    setCouponError("");
+    setUserDismissedAuto(true); // don't auto-apply again this session
+  };
 
 
   /** ---------- Razorpay + order (using ApiPost) ---------- */
@@ -1227,6 +1238,7 @@ export default function CheckoutPage() {
             razorpay_signature: response.razorpay_signature,
           }
 
+            console.log('payload', payload)
           try {
             const verifyRes = await ApiPost(CREATE_ORDER_URL, payload)
             const result = verifyRes?.data
@@ -1320,9 +1332,9 @@ export default function CheckoutPage() {
 
       <div className="min-h-screen  pt-[80px] font-Poppins bg-[#f0f0f0]">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex  w-[100%] gap-5">
+          <div className="flex flex-col md11:flex-row  w-[100%] gap-5">
             {/* Billing Form - Takes 3 columns */}
-            <div className=" w-[60%]">
+            <div className=" md11:w-[60%]">
               <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-blue-100 p-7 hover:shadow-2xl transition-all duration-500">
                 <div className="flex items-center mb-6">
                   <div>
@@ -1338,14 +1350,14 @@ export default function CheckoutPage() {
                       iconClass="fa-regular fa-user"
                       type="text"
                       value={formData.firstName}
-                      onChange={(v) => handleInputChange("firstName", v)}
+                      onChange={(v) => handleInputChange(v, "firstName")}
                     />
                     <FloatingInput
                       label="Last Name"
                       iconClass="fa-regular fa-user"
                       type="text"
                       value={formData.lastName}
-                      onChange={(v) => handleInputChange("lastName", v)}
+                      onChange={(v) => handleInputChange(v, "lastName")}
                     />
                   </div>
 
@@ -1356,7 +1368,7 @@ export default function CheckoutPage() {
                       iconClass="fa-regular fa-envelopes"
                       type="text"
                       value={formData.email}
-                      onChange={(v) => handleInputChange("email", v)}
+                      onChange={(v) => handleInputChange(v, "email")}
                     />
                     <FloatingInput
                       label="Number"
@@ -1365,15 +1377,17 @@ export default function CheckoutPage() {
                       inputMode="numeric"
                       maxLength={10}
                       value={formData.phone}
-                      onChange={(v) => handleInputChange("phone", v)}
+                      onChange={(v) => handleInputChange(v, "phone")}
                     />
                   </div>
 
                   <FloatingTextarea
                     label="Address"
+                    id="address"
+                    name="address"
                     iconClass="fa-regular fa-comment"
                     value={formData.address}
-                    onChange={(v) => handleInputChange("address", v)}
+                    onChange={handleInputChange}
                     maxLength={500}
                     rows={5}
                   />
@@ -1382,7 +1396,7 @@ export default function CheckoutPage() {
                     label="Apartment, suite, unit, etc. (optional)"
                     iconClass="fa-regular fa-building"
                     value={formData.apartment}
-                    onChange={(v) => handleInputChange("apartment", v)}
+                    onChange={(v) => handleInputChange(v, "apartment")}
                   />
 
                   <div className="grid grid-cols-1 md:grid-cols-3 pt-[5px] gap-6">
@@ -1394,7 +1408,7 @@ export default function CheckoutPage() {
                         inputMode="numeric"
                         maxLength={6}
                         value={formData.pinCode}
-                        onChange={(v) => handleInputChange("pinCode", v)}
+                        onChange={(v) => handleInputChange(v, "pinCode")}
                         error={errors.pinCode || ""}
                       />
                     </div>
@@ -1403,7 +1417,7 @@ export default function CheckoutPage() {
                         label="City *"
                         iconClass="fa-solid fa-city"
                         value={formData.city}
-                        onChange={(v) => handleInputChange("city", v)}
+                        onChange={(v) => handleInputChange(v, "city")}
                         error={errors.city || ""}
                       />
                     </div>
@@ -1412,7 +1426,7 @@ export default function CheckoutPage() {
                         label="State *"
                         iconClass="fa-solid fa-flag"
                         value={formData.state}
-                        onChange={(v) => handleInputChange("state", v)}
+                        onChange={(v) => handleInputChange(v, "state")}
                         error={errors.state || ""}
                       />
                     </div>
@@ -1453,7 +1467,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* Order Summary - Takes 2 columns */}
-            <div className=" w-[48%]">
+            <div className=" mdw-[48%]">
               <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-blue-100 p-5 sticky top-8 hover:shadow-2xl transition-all duration-500">
                 <div className="flex items-center mb-4">
                   <div
@@ -1512,11 +1526,10 @@ export default function CheckoutPage() {
                           <div
                             key={coupon.id}
                             onClick={() => handleApplyListedCoupon(coupon)}
-                            className={`relative p-3 rounded-lg border-[1.3px] cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
-                              calculateSubtotal() >= (coupon.minOrder || 0)
+                            className={`relative p-3 rounded-lg border-[1.3px] cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${calculateSubtotal() >= (coupon.minOrder || 0)
                                 ? "border-blue-200 hover:border-blue-400 bg-gradient-to-br from-white to-blue-50"
                                 : "border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed"
-                            }`}
+                              }`}
                           >
                             <div
                               className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-[600] bg-gradient-to-r ${coupon.color}`}
@@ -1639,7 +1652,7 @@ export default function CheckoutPage() {
                 </div>
 
                 <button
-                  onClick={createOrder}
+                  onClick={handleRazorpayPayment}
                   disabled={isProcessing}
                   className="w-full  px-5 py-2 text-white font-[600] text-md rounded-md disabled:bg-gray-500 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 disabled:hover:scale-100 shadow-lg hover:shadow-xl"
                   style={{

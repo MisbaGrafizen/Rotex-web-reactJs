@@ -845,7 +845,7 @@ const saveDetails = async () => {
                 OTP sent to <span className="font-semibold">+91 {phone}</span>
               </div>
 
-              <div className="flex gap-4" onPaste={handleOtpPaste}>
+              <div className="flex gap-[10px] md77:gap-4" onPaste={handleOtpPaste}>
                 {otp.map((d, i) => (
                   <input
                     key={i}
@@ -855,7 +855,7 @@ const saveDetails = async () => {
                     value={d}
                     onChange={(e) => handleOtpChange(i, e.target.value.replace(/\D/g, ""))}
                     onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                    className="w-12 h-12 text-center text-lg font-semibold border rounded-md focus:ring-2 focus:ring-emerald-500"
+                    className="md11:w-12 w-[50px] h-12 text-center text-lg font-semibold border outline-none rounded-md focus:ring-2 focus:ring-blue-500"
                   />
                 ))}
               </div>

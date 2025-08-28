@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <div className=" font-Poppins gap-[70px] flex pt-[80px] md:pt-[90px]  flex-col bg-[#f0f0f0] w-[100%] h-[100%]">
+      <div className=" font-Poppins gap-[70px] flex pt-[60px] md77:pt-[90px]  flex-col bg-[#f0f0f0] w-[100%] h-[100%]">
         <Herosection />
         <Discover />
 

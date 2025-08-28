@@ -65,9 +65,9 @@ export default function TechnicalDetails() {
         <p className="text-slate-600 text-[15px]">Comprehensive technical features and remote control functionality</p>
       </div>
 
-      <div className="flex  w-[100%] gap-8 ">
+      <div className="flex md11:flex-row  flex-col w-[100%] gap-8 ">
         {/* Technical Features - Left Side */}
-        <div className="w-[50%]">
+        <div className="md11:w-[50%]">
           <div className="bg-white border rounded-lg overflow-hidden border-slate-200 shadow-sm">
             <div className="bg-[#025da8] text-white px-6 py-3">
               <h3 className="text-xl font-semibold flex items-center">
@@ -108,16 +108,16 @@ export default function TechnicalDetails() {
         </div>
 
         {/* Remote Control - Right Side */}
-        <div className=" w-[40%]">
+        <div className=" md11:w-[40%]">
           <div className="bg-white border rounded-[10px] overflow-hidden border-slate-200  w-[100%] shadow-sm">
             <div className="bg-[#025da8] text-white px-6 py-3">
               <h3 className="text-xl font-semibold">Remote Control Operations</h3>
             </div>
 
 
-            <div className="p-6 flex  gap-[50px] w-[100%] ">
+            <div className="p-6 flex  md77:flex-row flex-col gap-[50px] w-[100%] ">
 
-              <img className=" h-[500px]" src={remote} />
+              <img className=" md77:h-[500px] h-[600px] md77:object-fill object-contain" src={remote} />
               <div className="space-y-2 w-[100%]">
                 <h4 className="font-semibold text-slate-700 text-sm uppercase tracking-wide mb-4 border-b border-slate-200 pb-2">
                   Available Operations

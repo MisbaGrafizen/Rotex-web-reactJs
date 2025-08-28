@@ -49,18 +49,18 @@ export default function BlogDetails() {
 
   return (
     <>
-      <div className="  md:w-[76%] w-[90%]  overflow-hidden relative mx-auto mt-[30px] flex flex-col md150:w-[1200px]">
+      <div className=" font-Poppins  md11:w-[76%] w-[90%]  overflow-hidden relative mx-auto  md77:pt-[100px] pt-[90px] md11:pt-[130px] flex flex-col md150:w-[1200px]">
         {blogData ? (
             <div className=" flex flex-col mt-[20px]  gap-[10px]">
               <Header text="Blog Details" />
 
               {/* Hero Banner */}
-              <div className="relative h-[500px] w-[100%]">
+              <div className="relative md77:h-[500px] w-[100%]">
                 {blogData?.image ? (
                   <img
                     src={blogData.image}
                     alt="Ceiling Fan Banner"
-                    className="h-full w-full rounded-[10px]"
+                    className="h-full w-full  object-contain md:object-fill rounded-[10px]"
                   />
                 ) : (
                   <div className="h-full w-full flex items-center justify-center bg-gray-200 text-gray-500 rounded-[10px]">

@@ -146,9 +146,9 @@ export default function AboutUs() {
     <>
       <Header />
 
-      <div className=' w-[80%] pt-[110px] pb-[40px]  font-Poppins mx-auto 2xl:w-[1300px] '>
+      <div className=' w-[90%] md11:w-[80%] pt-[110px] pb-[40px]  font-Poppins mx-auto 2xl:w-[1300px] '>
         <section className="   flex relative overflow-hidden">
-          <div className=" mx-auto px-6 grid lg:grid-cols-2 gap-12  relative z-10">
+          <div className=" mx-auto md11:px-6 grid lg:grid-cols-2 gap-12  relative z-10">
             {/* Left Content */}
             <div className=" space-y-8">
               <div>
@@ -189,14 +189,14 @@ export default function AboutUs() {
             </div>
 
             {/* Right Image */}
-            <div className="relative pr-[10px]">
+            <div className="relative pr-[10px] w-fit mx-auto">
               <div className="absolute rounded-3xl blur-3xl opacity-30 transform "></div>
               <img
                 src={mainImage}
                 alt="Rotex Industries Factory"
-                className="relative z-10 w-full h-[450px] object-content  shadow-lg rounded-[10px] transform "
+                className="relative z-10 w-full md77:h-[700px]  md77:object-cover md77:object-top md11:h-[450px] md11:object-content  shadow-lg rounded-[10px] transform "
               />
-              <div className="absolute bottom-5 -right-6 bg-white rounded-xl p-3 shadow-md border z-20">
+              <div className="absolute md11:block  hidden top-[400px] -right-6 bg-white rounded-xl p-3 shadow-md border z-20">
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-[#025da8] rounded-md flex items-center justify-center">
                     <Factory className="w-6 h-6 text-white" />
@@ -213,7 +213,10 @@ export default function AboutUs() {
       </div>
 
       <Faq />
+      <div className=' md77:px-[15px] md11:px-0'>
       <Blogs />
+      </div>
+
       <Footer />
     </>
   )

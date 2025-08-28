@@ -937,11 +937,11 @@ export default function CartDrawer({
             </div>
           )}
         </div>
-
+{/* 
         <div className="flex items-center px-[20px]  justify-between">
           <span className="text-sm text-gray-500">Subtotal</span>
           <span className="text-[18px] font-semibold text-gray-900">₹{fmtINR(subtotal)}</span>
-        </div>
+        </div> */}
 
         {/* Sticky Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-white">

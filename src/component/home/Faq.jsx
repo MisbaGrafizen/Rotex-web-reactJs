@@ -53,23 +53,23 @@ export default function Faq() {
   return (
  <>
 
-                   <section className="pt-20 font-Poppins mb-[50px] bg-white">
-                    <div className="container mx-auto px-4">
-                        <div className="text-center mb-7">
-                            <h2 className="text-4xl   font-[600] text-gray-800 mb-3">Frequently Asked Questions</h2>
-                            <p className="text-md text-gray-600 max-w-2xl mx-auto">
+                   <section className="pt-10 font-Poppins mb-[50px] bg-white">
+                    <div className="container mx-auto md77:px-6 md11:px-4">
+                        <div className=" mb-7">
+                            <h2 className="text-4xl  md77:text-center  font-[600] text-gray-800 mb-3">Frequently Asked Questions</h2>
+                            <p className="text-md text-gray-600 md77:text-center  max-w-2xl mx-auto">
                                 Find answers to common questions about our products and services
                             </p>
                         </div>
 
-                        <div className="max-w-4xl mx-auto space-y-4">
+                        <div className="md11:max-w-4xl mx-auto space-y-4">
                             {faqs.map((faq, index) => (
                                 <div key={index} className="bg-gray-50 rounded-2xl border-[0.5px] overflow-hidden shadow-lg">
                                     <button
                                         onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                                        className="w-full px-8 py-4 text-left flex items-center justify-between hover:bg-gray-100 transition-colors duration-200"
+                                        className="w-full  px-5 md77:px-8 py-4 text-left flex items-center justify-between hover:bg-gray-100 transition-colors duration-200"
                                     >
-                                        <h3 className="text-lg font-semibold text-gray-800 pr-4">{faq.question}</h3>
+                                        <h3 className="md77:text-lg font-semibold text-gray-800 pr-4">{faq.question}</h3>
                                         {expandedFaq === index ? (
                                             <Minus className="w-6 h-6 text-[#025da8] flex-shrink-0" />
                                         ) : (

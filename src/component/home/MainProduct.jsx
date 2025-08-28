@@ -561,45 +561,45 @@ export default function MainProduct() {
 
   // Normalize API product -> UI product shape (keeps your design intact)
   // maps your product response -> UI card shape
-const normalizeProduct = (p) => {
-  // pick the cheapest variant (by price) for card image/price/off
-  const variants = Array.isArray(p?.productImages) ? p.productImages : [];
-  const cheapest =
-    variants.length
-      ? [...variants].sort((a, b) => (a.price ?? 0) - (b.price ?? 0))[0]
-      : null;
+  const normalizeProduct = (p) => {
+    // pick the cheapest variant (by price) for card image/price/off
+    const variants = Array.isArray(p?.productImages) ? p.productImages : [];
+    const cheapest =
+      variants.length
+        ? [...variants].sort((a, b) => (a.price ?? 0) - (b.price ?? 0))[0]
+        : null;
 
-  const price = cheapest?.price ?? p?.price ?? 0;
-  const mrp = cheapest?.mrp ?? p?.maxPrice ?? price;
+    const price = cheapest?.price ?? p?.price ?? 0;
+    const mrp = cheapest?.mrp ?? p?.maxPrice ?? price;
 
-  let off = "";
-  if (mrp && price && mrp > price) {
-    const pct = Math.round(((mrp - price) / mrp) * 100);
-    off = `${pct}% OFF`;
-  }
+    let off = "";
+    if (mrp && price && mrp > price) {
+      const pct = Math.round(((mrp - price) / mrp) * 100);
+      off = `${pct}% OFF`;
+    }
 
-  // first image of the chosen variant
-  const img =
-    cheapest?.images?.[0] ||
-    p?.productImages?.[0]?.images?.[0] ||
-    "";
+    // first image of the chosen variant
+    const img =
+      cheapest?.images?.[0] ||
+      p?.productImages?.[0]?.images?.[0] ||
+      "";
 
-  return {
-    id: p?._id?.$oid || p?._id || Math.random().toString(36).slice(2),
-    badge: "New",
-    off,
-    title: p?.title || "Product",
-    subtitle: p?.subTitle || "",
-    price,
-    mrp,
-    img,
-    bullets: Array.isArray(p?.description) && p.description.length
-      ? p.description.slice(0, 4)
-      : ["Premium quality", "High performance", "Energy efficient", "Durable"],
-    // optionally pass more for details page usage:
-    // slug: p?.slug,
+    return {
+      id: p?._id?.$oid || p?._id || Math.random().toString(36).slice(2),
+      badge: "New",
+      off,
+      title: p?.title || "Product",
+      subtitle: p?.subTitle || "",
+      price,
+      mrp,
+      img,
+      bullets: Array.isArray(p?.description) && p.description.length
+        ? p.description.slice(0, 4)
+        : ["Premium quality", "High performance", "Energy efficient", "Durable"],
+      // optionally pass more for details page usage:
+      // slug: p?.slug,
+    };
   };
-};
 
 
   useEffect(() => {
@@ -609,7 +609,7 @@ const normalizeProduct = (p) => {
         const res = await ApiGet("/products");
         console.log('res-product', res)
         const arr = Array.isArray(res?.data?.products) ? res.data?.products : res?.data?.products || [];
-        setProducts(arr.map(normalizeProduct) );
+        setProducts(arr.map(normalizeProduct));
       } catch (e) {
         console.error("Fetch products failed:", e);
       }
@@ -655,15 +655,23 @@ const normalizeProduct = (p) => {
     const walk = (x - startX.current) * 1.2;
     el.scrollLeft = scrollLeft.current - walk;
   };
-  const onCardClick = (e, p) => {
-    if (dragging) {
-      e.preventDefault();
-      return;
-    }
-    // Optional: navigate to details if you have route
-    if (p?.slug) {
-      e.preventDefault();
-      navigate(`/product-details/${p.slug}`);
+  const onCardClick = (product) => {
+    if (!product) return;
+    console.log('product', product)
+
+    const dest = product?.title
+      ? `/product-details/${product.title}`
+      : product?._id
+        ? `/product-details/${product._id}`
+        : null;
+
+    if (dest) {
+      navigate(dest, {
+        state: {
+          id: product._id,
+          title: product.title
+        }
+      });
     }
   };
 
@@ -675,7 +683,7 @@ const normalizeProduct = (p) => {
 
   return (
     <section className="w-[90%] mx-auto">
-      <div className="mx-auto px-4">
+      <div className="mx-auto md11:px-4">
         <h2 className="text-3xl font-[600] text-gray-800 mb-5">Smart Fan Highlights</h2>
 
         <div className="mb-4 -mx-1">
@@ -705,14 +713,14 @@ const normalizeProduct = (p) => {
           {!atStart && (
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-10 z-10
+              className="pointer-events-none absolute inset-y-0 left-0 w-3  sm:w-10 z-10
                          bg-gradient-to-r from-[#f0f0f0] to-transparent"
             />
           )}
           {!atEnd && (
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-10 z-10
+              className="pointer-events-none absolute inset-y-0 right-0 w-3 sm:w-10 z-10
                          bg-gradient-to-l from-[#f0f0f0] to-transparent"
             />
           )}
@@ -734,7 +742,10 @@ const normalizeProduct = (p) => {
                 <a
                   href="#"
                   key={p.id}
-                  onClick={(e) => onCardClick(e, p)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onCardClick(p);
+                  }}
                   className="flex-none w-[250px] relative h-[380px] bg-white rounded-xl shadow-lg border border-gray-100
                              overflow-hidden  transition-shadow duration-300 snap-start"
                 >

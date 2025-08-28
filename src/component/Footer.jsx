@@ -8,7 +8,7 @@ export default function Footer() {
     <>
 
 
-      <footer className="bg-[#071a2d] font-Poppins  text-white pt-[30px] md:pb-[20px]  pb-[110px] px-6 md:px-12">
+      <footer className="bg-[#071a2d] font-Poppins  text-white pt-[30px] md:pb-[20px]  pb-[30px] px-6 md:px-12">
         <div className="md:max-w-[92%] mx-auto flex flex-col">
           <div className=" flex md:flex-row flex-col   gap-[20px] w-[100%] justify-between">
             <div className=" flex flex-col ">
@@ -58,7 +58,7 @@ export default function Footer() {
             <div className="md:grid  w-[100%] md:w-[800px] md:ml-[70px]  flex md:grid-cols-3 md:mb-[40px] gap-[10px] md:gap-[30px] ">
 
               {/* Discover us */}
-              <div className="">
+              <div className=" flex-shrink-0">
                 <h3 className="text-lg font-semibold mb-4">Discover us</h3>
                 <ul className="  flex flex-col gap-[7px]">
                   <li>
@@ -79,7 +79,7 @@ export default function Footer() {
                   </li>
                   <li>
                     <a
-                      href="/orders"
+                      href="/my-account"
                       className="text-gray-300 hover:text-white text-[14px] font-[300]"
                     >
                       My orders
@@ -201,20 +201,18 @@ export default function Footer() {
           {/* Bottom Bar */}
           <div className="flex flex-col md:flex-row justify-between items-center border-t border-gray-700 pt-6">
             <div className="flex flex-wrap justify-between w-[100%] gap-4 md:mb-0">
-              <span className="text-sm md:text-start text-center text-gray-300">
+              <span className="text-sm order-2 md:text-start text-center text-gray-300">
                 © 2025 All Rights Reserved by  Rotex Fans || Designed and
                 Developed with ❤️ by Grafizen International LLC
               </span>
-              <div className="  md:flex hidden  gap-[20px]">
-                <a href="#" className="text-sm text-gray-300 hover:text-white" >
+              <div className=" flex order-1 gap-[20px]">
+                <a href="/privacy-policy" className="text-sm text-gray-300 hover:text-white" >
                   Privacy Policy
                 </a>
-                <a href="#" className="text-sm text-gray-300 hover:text-white" >
+                <a href="terms&conditions" className="text-sm text-gray-300 hover:text-white" >
                   Terms & Conditions
                 </a>
-                <a href="#" className="text-sm text-gray-300 hover:text-white">
-                  Site Map
-                </a>
+     
               </div>
             </div>
 

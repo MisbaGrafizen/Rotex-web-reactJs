@@ -252,6 +252,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../../component/Header";
 import { useNavigate } from "react-router-dom";
 import { ApiGet } from "../../helper/axios";
+import Footer from "../../component/Footer";
 
 export default function AllProduct() {
   const navigate = useNavigate();
@@ -357,7 +358,7 @@ const onCardClick = (product) => {
       <Header />
 
       <section className="pt-[120px] font-Poppins min-h-screen bg-[#f0f0f0] mx-auto">
-        <div className="w-[90%] mx-auto flex flex-col gap-[50px] px-4">
+        <div className="md11:w-[90%] mx-auto flex flex-col gap-[50px] px-4">
           {loading && (
             <div className="py-16 text-center text-neutral-600">
               Loading products…
@@ -380,8 +381,8 @@ const onCardClick = (product) => {
                   </h2>
 
                   <div className="relative">
-                    <div className="overflow-hidden">
-                      <div className="grid md11:grid-cols-5 2xl:grid-cols-5 scroll-smooth gap-[14px] snap-x snap-mandatory pb-4">
+                    <div className=" overflow-x-auto md77:overflow-hidden">
+                      <div className="  flex  md77:grid md77:grid-cols-3 md11:grid-cols-5 2xl:grid-cols-5 scroll-smooth gap-[14px] snap-x snap-mandatory pb-4">
                         {products.length === 0 ? (
                           <div className="col-span-full py-6 text-neutral-500">
                             No products found in this category.
@@ -465,6 +466,7 @@ const onCardClick = (product) => {
           ))}
         </div>
       </section>
+      <Footer />
     </>
   );
 }

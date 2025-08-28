@@ -57,14 +57,14 @@ export default function BlogMainPage() {
   return (
     <>
       <Header />
-      <section className=' select-none flex  mb-[40px] flex-col gap-[30px] 2xl:w-[1300px]  relative font-Poppins justify-between w-[90%] mx-auto md:w-[78%] pt-[110px]  '>
+      <section className=' select-none flex  mb-[40px] flex-col gap-[30px] 2xl:w-[1300px]  relative font-Poppins justify-between w-[90%] mx-auto md11:w-[78%] pt-[110px]  '>
         <div className='md:text-[14px] text-[12px] md:px-0 px-[10px] font-[500] flex w-[100%] overflow-x-auto gap-[10px]'>
 
         </div>
         <div className=' flex w-[100%] gap-[20px] justify-between'>
 
 
-          <div className=' flex-col gap-[20px]  flex md:w-[74%]'>
+          <div className=' flex-col gap-[20px] w-[100%] flex md11:w-[74%]'>
 
 
 
@@ -113,12 +113,12 @@ export default function BlogMainPage() {
               <div key={blog.id} className=' flex flex-col gap-[10px] '>
                 <img
                   onClick={() => openLightbox(index)}
-                  className='cursor-pointer flex w-[100%] h-[240px] md:h-[400px] rounded-[8px] transition-transform duration-300 ease-in-out scale-[0.98] hover:scale-[1]'
+                  className='cursor-pointer flex w-[100%] h-[280px] md:h-[400px] rounded-[8px] transition-transform duration-300 ease-in-out scale-[0.98] hover:scale-[1]'
                   src={blog.image}
                   alt="Blogs"
                 />
                 <div className=' px-[10px] text-[14px] items-center  flex text-[#025da8] gap-[10px]'>
-                  <i class="fa-regular mb-[2px] text-[16px] fa-calendar-days"></i>
+                  <i className="fa-regular mb-[2px] text-[16px] fa-calendar-days"></i>
                   {formatDate(blog?.createdAt)} &nbsp;-&nbsp; {formatTime(blog?.createdAt)}
                 </div>
                 <div className=' flex w-[100%] md:flex-row flex-col  justify-between md:items-end  gap-[14px]'>
@@ -138,7 +138,7 @@ export default function BlogMainPage() {
                       </p>
                     </div>
                   </div>
-                  <button className='flex gap-[10px] cursor-pointer pr-[10px] text-[#025da8] w-[150px] items-center' onClick={() => handleBlogDetails(blog.title)}>
+                  <button className='flex gap-[10px] cursor-pointer pl-[12px] md77:pl-[0px] pr-[10px] text-[#025da8] w-[150px] items-center' onClick={() => handleBlogDetails(blog.title)}>
                     <p className='hover:underline'>Read More</p>
                     <i className="fa-regular fa-arrow-right"></i>
                   </button>
@@ -150,7 +150,7 @@ export default function BlogMainPage() {
             ))}
           </div>
 
-          <div className="h-fit max-w-[300px] right-[10%] border border-[#025da8] md:flex hidden bg-white shadow p-4 rounded-[10px]">
+          <div className="h-fit max-w-[300px]  right-[10%] border border-[#025da8] md11:flex hidden bg-white shadow p-4 rounded-[10px]">
             <div className="w-full">
               {/* 🔍 Search */}
               <div className="flex justify-between border p-2 rounded-[8px]">

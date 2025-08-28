@@ -230,6 +230,7 @@ export default function NewComplaint() {
   const [products, setProducts] = useState([]); // [{id,title}]
   const [loadingProducts, setLoadingProducts] = useState(false);
   const [productsError, setProductsError] = useState("");
+  const [errors, setErrors] = useState({})
 
   // -------- Selection ----------
   const [selectedProductTitle, setSelectedProductTitle] = useState("");
@@ -302,9 +303,20 @@ export default function NewComplaint() {
   const productOptions = useMemo(() => products.map((p) => p.title), [products]);
 
   // -------- Form helpers ----------
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+    const handleInputChange = (e, fieldName = null) => {
+    if (typeof e === "string" && fieldName) {
+      setFormData((prev) => ({ ...prev, [fieldName]: e }))
+      if (errors[fieldName]) {
+        setErrors((prev) => ({ ...prev, [fieldName]: "" }))
+      }
+    } else {
+      const { name, value } = e?.target || {}
+      setFormData((prev) => ({ ...prev, [name]: value }))
+      if (errors[name]) {
+        setErrors((prev) => ({ ...prev, [name]: "" }))
+      }
+    }
+  }
 
   // Strict validation to satisfy your Mongoose "required" fields
   const validate = () => {
@@ -399,7 +411,7 @@ export default function NewComplaint() {
         <div className="p-3 rounded-md bg-green-50 text-green-700 text-sm">{submitSuccess}</div>
       )}
 
-      <div className="rounded-xl p-5 border border-gray-200">
+      <div className="rounded-xl p-3 md77:p-5 border border-gray-200">
         <div className="space-y-6">
           {/* Product Selection */}
           <div className="space-y-2 shadow-sm rounded-[10px]">
@@ -422,7 +434,7 @@ export default function NewComplaint() {
                     label="Complaint Category"
                     options={complaintCategories}
                     value={formData.complaintCategory}
-                    onChange={(val) => handleInputChange("complaintCategory", val)}
+                    onChange={(val) => handleInputChange(val, "complaintCategory")}
                   />
                 </div>
 
@@ -430,7 +442,7 @@ export default function NewComplaint() {
                   <FloatingInput
                     type="text"
                     value={formData.customerName}
-                    onChange={(v) => handleInputChange("customerName", v)}
+                    onChange={(v) => handleInputChange(v, "customerName")}
                     label="Full name"
                     iconClass="fa-regular fa-user"
                   />
@@ -442,7 +454,7 @@ export default function NewComplaint() {
                 <FloatingInput
                   type="tel"
                   value={formData.phoneNumber}
-                  onChange={(v) => handleInputChange("phoneNumber", v)}
+                  onChange={(v) => handleInputChange(v, "phoneNumber")}
                   label="Phone number"
                   iconClass="fa-solid fa-phone-volume"
                   inputMode="numeric"
@@ -451,7 +463,7 @@ export default function NewComplaint() {
                 <FloatingInput
                   type="tel"
                   value={formData.alternateNumber}
-                  onChange={(v) => handleInputChange("alternateNumber", v)}
+                  onChange={(v) => handleInputChange(v, "alternateNumber")}
                   label="Alternate number (optional)"
                   iconClass="fa-light fa-phone-volume"
                   inputMode="numeric"
@@ -464,14 +476,14 @@ export default function NewComplaint() {
                 <FloatingInput
                   type="email"
                   value={formData.email}
-                  onChange={(v) => handleInputChange("email", v)}
+                  onChange={(v) => handleInputChange(v, "email")}
                   label="Email address"
                   iconClass="fa-regular fa-envelope"
                 />
                 <FloatingInput
                   type="text"
                   value={formData.pinCode}
-                  onChange={(v) => handleInputChange("pinCode", v)}
+                  onChange={(v) => handleInputChange(v, "pinCode")}
                   label="PIN code"
                   iconClass="fa-solid fa-map-pin"
                   inputMode="numeric"
@@ -484,7 +496,7 @@ export default function NewComplaint() {
                 <FloatingInput
                   type="text"
                   value={formData.serialNo}
-                  onChange={(v) => handleInputChange("serialNo", v)}
+                  onChange={(v) => handleInputChange(v, "serialNo")}
                   label="Warranty / Serial number (optional)"
                   iconClass="fa-solid fa-hashtag"
                 />
@@ -495,7 +507,7 @@ export default function NewComplaint() {
                 <FloatingInput
                   type="text"
                   value={formData.address}
-                  onChange={(v) => handleInputChange("address", v)}
+                  onChange={(v) => handleInputChange(v, "address")}
                   label="Complete Address"
                   iconClass="fa-regular fa-location-dot"
                 />
@@ -504,10 +516,12 @@ export default function NewComplaint() {
               {/* Message */}
               <FloatingTextarea
                 label="Message (optional)"
-                value={formData.message}
-                onChange={(v) => handleInputChange("message", v)}
+                          id="message"
+                                            name="message"
+                value={formData?.message}
+                onChange={(v) => handleInputChange(v, "message")}
                 iconClass="fa-regular fa-comment"
-                rows={4}
+                rows={6}
               />
 
               {/* Submit */}

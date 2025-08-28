@@ -12,6 +12,8 @@ import { ApiGet } from "../../helper/axios";
 export default function Blogs() {
   const [hoveredCard, setHoveredCard] = useState(null);
   const [blogs, setBlogs] = useState([]);
+  const navigate = useNavigate();
+
 
 
     const sortByCreatedAtDesc = (arr) =>
@@ -38,17 +40,25 @@ export default function Blogs() {
 
   console.log('blogs', blogs)
 
+
+  const handleBlogDetails = (title) => {
+  if (!title) return;
+
+  const formattedTitle = encodeURIComponent(title.toLowerCase().replace(/\s+/g, "-"));
+  navigate(`/blogDetails/${formattedTitle}`);
+};
+
   return (
-    <section className="py-10 font-Poppins ">
+    <section className="md11:py-10 font-Poppins ">
       <div className="mx-auto px-4">
-        <div className="text-center mb-10">
-     <h2 className="md:text-[45px] text-[30px] font-[600] text-gray-800 mb-3">
+        <div className="mb-10">
+     <h2 className="md:text-[45px] md77:text-center leading-[40px] md77:leading-[52px] text-[30px] font-[600] text-gray-800 mb-3">
   Everyday Comfort Starts with <b className="font-[600] text-[#062f95]">Rotex Fans</b>
 </h2>
 
         </div>
 
-        <div className="flex overflow-x-auto pb-[19px] px-[20px] w-[100%] gap-8">
+        <div className="flex overflow-x-auto pb-[19px] md77:px-[20px] w-[100%] gap-8">
           {blogs.map((post) => (
             <div
               key={post._id}
@@ -84,7 +94,8 @@ export default function Blogs() {
                       </div>
                     </div> */}
                   </div>
-                  <button className="group inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-[15px] font-medium">
+                  <button className="group inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-[15px] font-medium"
+                  onClick={() => handleBlogDetails(post.title)}>
                     Read More
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>

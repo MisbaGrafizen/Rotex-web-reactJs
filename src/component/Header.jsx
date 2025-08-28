@@ -298,7 +298,7 @@ export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [selectedPage, setSelectedPage] = useState("New Products");
   const [loginOpen, setLoginOpen] = useState(false);
-const location = useLocation();
+  const location = useLocation();
   // ↓ track auth by localStorage user id
   const [userId, setUserId] = useState(() => {
     try {
@@ -345,23 +345,23 @@ const location = useLocation();
     setUserId("");
     navigate("/");
   };
-  
+
   const navItems = [
-  { label: "Home", path: "/" },
-  { label: "About Us", path: "/about-us" },
-  { label: "Blogs", path: "/blogs" },
-  { label: "Contact Us", path: "/contact-us" },
-];
+    { label: "Home", path: "/" },
+    { label: "About Us", path: "/about-us" },
+    { label: "Blogs", path: "/blogs" },
+    { label: "Contact Us", path: "/contact-us" },
+  ];
   return (
-    <header className="fixed top-0 pl-[60px] font-Poppins flex flex-col w-[100%] h-[90px] shadow-xl left-0 right-0 z-50 bg-[#fafafa]">
-      <div className="flex gap-[10px] items-center w-[100%] border-gray-200">
+    <header className="fixed top-0 md11:pl-[60px] md77:pl-[15px] font-Poppins flex flex-col pt-[10px] md77:pt-0 w-[100%] h-[66px] md77:h-[90px] shadow-xl left-0 right-0 z-50 bg-[#fafafa]">
+      <div className="flex md77:gap-[40px] md11:gap-[10px] items-center justify-between md11:justify-start w-[100%] border-gray-200">
         <img className="w-[140px] h-[50px] object-contain" src={logo} alt="Logo" />
-        <div className="w-[90%]">
+        <div className="md11:w-[90%]  w-[100px] md77:w-[70%]">
           {/* Top bar */}
-          <div className="w-[100%] border-b mx-auto pr-[80px] ">
-            <div className="flex items-center w-[100%] justify-between h-[48px]">
+          <div className="w-[100%] md77:block hidden border-b mx-auto pr-[30px] md11:pr-[80px] ">
+            <div className="flex items-center w-[100%]  md77:justify-end  md11:justify-between h-[48px]">
               {/* Search */}
-              <div className="flex mx-2">
+              <div className=" hidden md11:flex mx-2">
                 <div className="relative w-[260px]">
                   <svg
                     className="absolute left-4 top-[18px] transform -translate-y-1/2 text-gray-400 w-5 h-5"
@@ -384,24 +384,23 @@ const location = useLocation();
                 </div>
               </div>
 
-              <div className="flex items-center space-x-6">
-               <div className="flex w-[100%] pt-[3px] gap-[20px]">
-  {navItems.map((item) => (
-    <button
-      key={item.path}
-      onClick={() => navigate(item.path)}
-      className={`font-[500] text-[13px] ${
-        location.pathname === item.path
-          ? "text-[#025da8] font-semibold"
-          : "text-gray-700 hover:text-[#025da8]"
-      }`}
-    >
-      {item.label}
-    </button>
-  ))}
-  </div>
-          
-                <div className="relative ">
+              <div className="flex items-center md11:justify-start  md77:justify-between space-x-6">
+                <div className=" hidden md77:flex w-[100%] pt-[3px] gap-[20px]">
+                  {navItems.map((item) => (
+                    <button
+                      key={item.path}
+                      onClick={() => navigate(item.path)}
+                      className={`font-[500] text-[13px] ${location.pathname === item.path
+                        ? "text-[#025da8] font-semibold"
+                        : "text-gray-700 hover:text-[#025da8]"
+                        }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="relative md11:block  hidden ">
 
                   <button
                     className="flex items-center flex-shrink-0 min-w-[130px] space-x-1 text-gray-700 hover:text-[#025da8] transition-colors duration-200 text-[12px] font-[500]"
@@ -451,14 +450,14 @@ const location = useLocation();
                   </div>
                 </div>
 
-                <button className="flex flex-shrink-0 items-center space-x-1 text-gray-700 hover:text-[#025da8] transition-colors duration-200 text-[12px] font-[500]">
+                <button className="md11:flex hidden flex-shrink-0 items-center space-x-1 text-gray-700 hover:text-[#025da8] transition-colors duration-200 text-[12px] font-[500]">
                   <span>Support</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
 
-                <button className="px-3 flex-shrink-0 py-[5px] border-[1.4px] border-[#025da8] text-[#025da8] hover:bg-[#025da8] hover:text-white transition-all duration-200 rounded-full text-sm font-medium">
+                <button className="px-3  md11:block hidden flex-shrink-0 py-[5px] border-[1.4px] border-[#025da8] text-[#025da8] hover:bg-[#025da8] hover:text-white transition-all duration-200 rounded-full text-sm font-medium">
                   For Business
                 </button>
 
@@ -517,10 +516,31 @@ const location = useLocation();
             }}
           />
 
+          <div className=" flex gap-[30px] items-center md77:hidden md77:gap-[10px]">
+
+
+            <button
+              className="text-gray-700 hover:text-[#025da8] transition-colors duration-200 px-[3px] py-[10px]"
+              aria-label="Cart"
+              onClick={() => navigate("/cart")}
+            >
+              <i className="fa-regular text-[20px] fa-cart-shopping"></i>
+            </button>
+
+            {/* User icon: if logged in -> /my-account, else open login */}
+            <button
+              className="text-gray-700 hover:text-[#025da8] transition-colors duration-200 px-[2px] py-[10px]"
+              onClick={handleUserIconClick}
+              aria-label={isLoggedIn ? "My Account" : "Open login"}
+              title={isLoggedIn ? "My Account" : "Login"}
+            >
+              <i className="text-[20px] fa-regular fa-user"></i>
+            </button>
+          </div>
           {/* Secondary Navigation */}
-          <div className="">
+          <div className=" md77:block hidden">
             <div className="mx-auto px-2 py-[2px]">
-              <div className="flex items-center space-x-5 h-[35px]">
+              <div className="flex w-[100%] md77:justify-end  md11:justify-start md77:pr-[20px] items-center space-x-5 h-[35px]">
                 {["New Products", "Best Seller", "Register Warranty", "Loyalty"].map((page) => (
                   <a
                     key={page}

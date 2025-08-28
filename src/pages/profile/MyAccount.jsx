@@ -492,7 +492,8 @@ import QuickFix from "../../component/myAccount/Quickfix"
 import NewComplaint from "../../component/myAccount/NewComplaint"
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../component/Header";
-import { ApiGet, ApiPost, ApiPut } from "../../helper/axios"; 
+import { ApiGet, ApiPost, ApiPut } from "../../helper/axios";
+import Footer from "../../component/Footer";
 
 export default function MyAccount() {
   // ---------- LocalStorage Keys ----------
@@ -570,7 +571,7 @@ export default function MyAccount() {
         setProfile(data);
         try {
           localStorage.setItem(LOCAL_PROFILE_KEY, JSON.stringify(data));
-        } catch {}
+        } catch { }
       } else {
         setProfileError(res?.message || "Failed to load profile");
       }
@@ -659,7 +660,7 @@ export default function MyAccount() {
         setProfile(updated);
         try {
           localStorage.setItem(LOCAL_PROFILE_KEY, JSON.stringify(updated));
-        } catch {}
+        } catch { }
 
         setEditing(false);
       } else {
@@ -678,8 +679,8 @@ export default function MyAccount() {
     () => profile || { name: "", email: "", mobileNumber: "", address: "" },
     [profile]
   );
-  
-    const userProfile = {
+
+  const userProfile = {
     name:
       safeProfile.name ||
       [safeProfile.firstName, safeProfile.lastName].filter(Boolean).join(" "),
@@ -692,10 +693,10 @@ export default function MyAccount() {
   const niceDate = (d) =>
     d
       ? new Date(d).toLocaleDateString("en-IN", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
       : "";
 
   const getStatusColor = (status = "") => {
@@ -725,25 +726,24 @@ export default function MyAccount() {
     return "text-gray-600 bg-gray-50 border-[1.2px] border-gray-300";
   };
 
-         
+
   return (
     <>
       <Header />
-      <div className="font-Poppins min-h-screen bg-[#f0f0f0] pt-[100px] w-full">
-        <div className="w-[93%] mx-auto px-4 flex gap-6 justify-between py-8">
-          <div className="bg-white rounded-2xl shadow-xl md:w-[72%] overflow-hidden">
+      <div className="font-Poppins min-h-screen bg-[#f0f0f0] pt-[70px] md77:pt-[100px] w-full">
+        <div className=" md77:w-[99%] md11:w-[93%] mx-auto px-4 flex gap-6 justify-between py-8">
+          <div className="bg-white rounded-2xl min-h-[600px] shadow-xl md11:w-[72%] overflow-hidden">
             {/* Tabs */}
             <div className="border-b border-gray-200">
-              <nav className="flex space-x-8 px-8 pt-6">
+              <nav className="flex overflow-x-auto space-x-8 px-8 pt-6">
                 {tabs.map(({ id, label, icon: Icon }) => (
                   <button
                     key={id}
                     onClick={() => setActiveTab(id)}
-                    className={`flex items-center space-x-2 pb-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
-                      activeTab === id
+                    className={`flex flex-shrink-0 items-center space-x-2 pb-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${activeTab === id
                         ? "border-[#025da8] text-[#025da8]"
                         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                    }`}
+                      }`}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{label}</span>
@@ -753,18 +753,18 @@ export default function MyAccount() {
             </div>
 
             {/* Content */}
-            <div className="px-6 overflow-y-auto max-h-[72vh] pb-8 pt-4">
+            <div className=" px-4 md77:px-6 overflow-y-auto max-h-[72vh] pb-8 pt-4">
               {/* PROFILE TAB */}
               {activeTab === "profile" && (
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-[600] text-gray-900">
+                    <h2 className="md77:text-2xl text-xl  font-[600] text-gray-900">
                       Profile Information
                     </h2>
                     <div className="flex items-center gap-3">
                       {!editing ? (
                         <button
-                          className="flex items-center gap-2 px-4 py-2 bg-[#025da8] text-white rounded-lg hover:bg-[#024a8a]"
+                          className="flex items-center gap-2 text-[13px] md77:text-[16px] px-2 md77:px-4 py-2 bg-[#025da8] text-white rounded-lg hover:bg-[#024a8a]"
                           onClick={startEditing}
                           disabled={profileLoading}
                         >
@@ -930,10 +930,10 @@ export default function MyAccount() {
                       onClick={() => {
                         try {
                           localStorage.removeItem(LOCAL_USER_ID_KEY);
-                        } catch {}
+                        } catch { }
                         try {
                           localStorage.removeItem(LOCAL_PROFILE_KEY);
-                        } catch {}
+                        } catch { }
                         window.location.reload();
                       }}
                     >
@@ -947,7 +947,7 @@ export default function MyAccount() {
               {activeTab === "orders" && (
                 <>
                   <div className="flex gap-[40px] w-[100%]">
-                    <div className="space-y-1 ">
+                    <div className="space-y-1 w-[100%] ">
                       <div className="flex items-center justify-between"></div>
 
                       {ordersLoading && (
@@ -1092,14 +1092,14 @@ export default function MyAccount() {
                                               {deliveryStatus.toLowerCase() === "delivered"
                                                 ? "100%"
                                                 : deliveryStatus
-                                                    .toLowerCase()
-                                                    .includes("in transit")
-                                                ? "75%"
-                                                : deliveryStatus
+                                                  .toLowerCase()
+                                                  .includes("in transit")
+                                                  ? "75%"
+                                                  : deliveryStatus
                                                     .toLowerCase()
                                                     .includes("processing")
-                                                ? "25%"
-                                                : "0%"}
+                                                    ? "25%"
+                                                    : "0%"}
                                             </span>
                                           </div>
                                           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -1110,14 +1110,14 @@ export default function MyAccount() {
                                                   deliveryStatus.toLowerCase() === "delivered"
                                                     ? "100%"
                                                     : deliveryStatus
-                                                        .toLowerCase()
-                                                        .includes("in transit")
-                                                    ? "75%"
-                                                    : deliveryStatus
+                                                      .toLowerCase()
+                                                      .includes("in transit")
+                                                      ? "75%"
+                                                      : deliveryStatus
                                                         .toLowerCase()
                                                         .includes("processing")
-                                                    ? "25%"
-                                                    : "0%",
+                                                        ? "25%"
+                                                        : "0%",
                                               }}
                                             ></div>
                                           </div>
@@ -1149,36 +1149,35 @@ export default function MyAccount() {
                                       <div className="flex items-center justify-between text-sm">
                                         <div className="flex items-center space-x-2">
                                           <div
-                                            className={`w-3 h-3 rounded-full ${
-                                              deliveryStatus.toLowerCase() === "processing"
+                                            className={`w-3 h-3 rounded-full ${deliveryStatus.toLowerCase() === "processing"
                                                 ? "bg-orange-500"
                                                 : deliveryStatus.toLowerCase() === "delivered"
-                                                ? "bg-green-500"
-                                                : "bg-blue-500"
-                                            }`}
+                                                  ? "bg-green-500"
+                                                  : "bg-blue-500"
+                                              }`}
                                           ></div>
                                           <span className="text-gray-600">
                                             {deliveryStatus.toLowerCase() === "delivered"
                                               ? "Delivered successfully"
                                               : deliveryStatus
-                                                  .toLowerCase()
-                                                  .includes("in transit")
-                                              ? "Package is on the way"
-                                              : deliveryStatus
+                                                .toLowerCase()
+                                                .includes("in transit")
+                                                ? "Package is on the way"
+                                                : deliveryStatus
                                                   .toLowerCase()
                                                   .includes("processing")
-                                              ? "Order is being processed"
-                                              : "Order placed"}
+                                                  ? "Order is being processed"
+                                                  : "Order placed"}
                                           </span>
                                         </div>
                                         <span className="text-gray-500">
                                           {deliveryStatus.toLowerCase() === "delivered"
                                             ? "Completed"
                                             : deliveryStatus.toLowerCase().includes("in transit")
-                                            ? "Expected in 2-3 days"
-                                            : deliveryStatus.toLowerCase().includes("processing")
-                                            ? "Processing"
-                                            : "Pending"}
+                                              ? "Expected in 2-3 days"
+                                              : deliveryStatus.toLowerCase().includes("processing")
+                                                ? "Processing"
+                                                : "Pending"}
                                         </span>
                                       </div>
                                     </div>
@@ -1190,20 +1189,26 @@ export default function MyAccount() {
 
                           {/* Empty State */}
                           {orders.length === 0 && (
-                            <div className="text-center py-16">
-                              <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                                No orders yet
-                              </h3>
-                              <p className="text-gray-600 mb-6">
-                                When you place orders, they&apos;ll appear here
-                              </p>
-                              <Link
-                                to="/"
-                                className="inline-flex items-center space-x-2 px-6 py-3 bg-[#025da8] text-white rounded-lg hover:bg-[#024a8a] transition-colors duration-200"
-                              >
-                                <span>Start Shopping</span>
-                              </Link>
+                            <div className="flex flex-col  justify-center">
+
+
+                              <div className=" flex w-[230px] mx-auto py-10 justify-center flex-col">
+
+                  
+                                <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                                <h3 className="text-xl text-center font-semibold text-gray-900 mb-2">
+                                  No orders yet
+                                </h3>
+                                <p className="text-gray-600 text-center mb-6">
+                                  When you place orders, they&apos;ll appear here
+                                </p>
+                                <Link
+                                  to="/"
+                                  className="inline-flex items-center mx-auto w-[170px] space-x-2 px-6 py-2 bg-[#025da8] text-white rounded-lg hover:bg-[#024a8a] transition-colors duration-200"
+                                >
+                                  <span>Start Shopping</span>
+                                </Link>
+                                       </div>
                             </div>
                           )}
                         </>
@@ -1219,20 +1224,20 @@ export default function MyAccount() {
                   Wishlist coming soon…
                 </div>
               )}
-              
 
-                              {/* Register Warranty Tab */}
-            {activeTab === "warranty" && <RegisterWarranty />}
 
-            {/* Quick Fix Tab */}
-            {activeTab === "quickfix" && <QuickFix />}
+              {/* Register Warranty Tab */}
+              {activeTab === "warranty" && <RegisterWarranty />}
 
-            {/* New Complaint Tab */}
-            {activeTab === "complaint" && <NewComplaint />}
+              {/* Quick Fix Tab */}
+              {activeTab === "quickfix" && <QuickFix />}
+
+              {/* New Complaint Tab */}
+              {activeTab === "complaint" && <NewComplaint />}
             </div>
           </div>
 
-          <aside className="w-[330px] bg-white border min-h-[300px] rounded-[15px] p-4">
+          <aside className="w-[330px] hidden md11:block bg-white border min-h-[300px] rounded-[15px] p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold">Account</h3>
               <span className="text-xs text-gray-500">User ID</span>
@@ -1260,7 +1265,7 @@ export default function MyAccount() {
           </aside>
         </div>
       </div>
-      
+      <Footer />
     </>
   );
 }
