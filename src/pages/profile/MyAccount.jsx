@@ -537,7 +537,7 @@ export default function MyAccount() {
 
   const tabs = [
     { id: "profile", label: "Profile", icon: User },
-    { id: "wishlist", label: "My Wishlist", icon: Heart },
+    // { id: "wishlist", label: "My Wishlist", icon: Heart },
 
     { id: "orders", label: "My Orders", icon: Package },
     { id: "warranty", label: "Register Warranty", icon: Edit2 },
@@ -1219,11 +1219,12 @@ export default function MyAccount() {
               )}
 
               {/* WISHLIST TAB (stub) */}
-              {activeTab === "wishlist" && (
+              {/* {activeTab === "wishlist" && (
                 <div className="text-center py-16 text-gray-600">
                   Wishlist coming soon…
                 </div>
-              )}
+
+              )} */}
 
 
               {/* Register Warranty Tab */}
@@ -1238,7 +1239,7 @@ export default function MyAccount() {
           </div>
 
           <aside className="w-[330px] hidden md11:block bg-white border min-h-[300px] rounded-[15px] p-4">
-            <div className="flex items-center justify-between mb-3">
+            {/* <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold">Account</h3>
               <span className="text-xs text-gray-500">User ID</span>
             </div>
@@ -1261,7 +1262,7 @@ export default function MyAccount() {
               >
                 {ordersLoading ? "Refreshing Orders…" : "Refresh Orders"}
               </button>
-            </div>
+            </div> */}
           </aside>
         </div>
       </div>

@@ -20,7 +20,7 @@
 //                         <img
 //                             src={productmain}
 //                             alt="Epic Pro BLDC+ Ceiling Fan"
-//                             className="w-full h-full  transition-transform duration-300 group-hover:scale-105"
+//                             className="w-full h-full  transition-transform duration-300 "
 //                         />
 //                         {/* <div className="absolute inset-0 bg-black bg-opacity-30"></div> */}
 //                         <div className="absolute bottom-[-1px] z-10  pt-[20px] min-w-[400px] w-[100%] rounded-t-[10px]  text-white">
@@ -39,7 +39,7 @@
 //                             <img
 //                                 src={productmain1}
 //                                 alt="Elio BLDC+ Ceiling Fan"
-//                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+//                                 className="w-full h-full object-cover transition-transform duration-300 "
 //                             />
 
 //                             <div className="absolute bottom-[-1px] pt-[8px]   z-10 rounded-tr-[20px] w-[90%]  text-white">
@@ -56,7 +56,7 @@
 //                             <img
 //                                 src={productmain2}
 //                                 alt="Crista BLDC+ Ceiling Fan"
-//                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+//                                 className="w-full h-full object-cover transition-transform duration-300 "
 //                             />
 
 //                                                       <div className="absolute bottom-[-1px] pt-[8px]  z-10 rounded-tr-[20px] w-[90%]  text-white">
@@ -73,7 +73,7 @@
 //                             <img
 //                                 src={productmain3}
 //                                 alt="Stealth Neo BLDC+ Ceiling Fan"
-//                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+//                                 className="w-full h-full object-cover transition-transform duration-300 "
 //                             />
 
 //                             <div className="absolute bottom-[-1px] pt-[8px]  z-10 rounded-tr-[20px] w-[90%]  text-white">
@@ -90,7 +90,7 @@
 //                             <img
 //                                 src={productmain1}
 //                                 alt="Albus Underlight Smart BLDC+ Ceiling Fan"
-//                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+//                                 className="w-full h-full object-cover transition-transform duration-300 "
 //                             />
 
 //                               <div className="absolute bottom-[-1px] pt-[8px]  z-10 rounded-tr-[20px] w-[90%]  text-white">
@@ -173,7 +173,7 @@ export default function FetureProduct() {
             <img
               src={big.image}
               alt={big.title}
-              className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+              className="w-full h-full object-cover object-top transition-transform duration-300 "
               loading="lazy"
             />
 
@@ -194,7 +194,7 @@ export default function FetureProduct() {
               <img
                 src={small1.image}
                 alt={small1.title}
-                className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                className="w-full h-full object-cover object-top transition-transform duration-300 "
                 loading="lazy"
               />
               <div className="absolute bottom-[-1px] pt-[8px]   z-10 rounded-tr-[20px] w-[90%]  text-white">
@@ -213,7 +213,7 @@ export default function FetureProduct() {
               <img
                 src={small2.image}
                 alt={small2.title}
-                className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                className="w-full h-full object-cover object-top transition-transform duration-300 "
                 loading="lazy"
               />
               <div className="absolute bottom-[-1px] pt-[8px]  z-10 rounded-tr-[20px] w-[90%]  text-white">
@@ -232,7 +232,7 @@ export default function FetureProduct() {
               <img
                 src={small3.image}
                 alt={small3.title}
-                className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                className="w-full h-full object-cover object-top transition-transform duration-300 "
                 loading="lazy"
               />
               <div className="absolute bottom-[-1px] pt-[8px]  z-10 rounded-tr-[20px] w-[90%]  text-white">
@@ -251,7 +251,7 @@ export default function FetureProduct() {
               <img
                 src={small4.image}
                 alt={small4.title}
-                className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                className="w-full h-full object-cover object-top transition-transform duration-300 "
                 loading="lazy"
               />
               <div className="absolute bottom-[-1px] pt-[8px]  z-10 rounded-tr-[20px] w-[90%]  text-white">

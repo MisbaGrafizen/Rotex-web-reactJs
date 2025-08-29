@@ -179,19 +179,19 @@ const handleInputChange = (e, fieldName = null) => {
                             </div>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-17">
                                 <div className="text-center">
-                                    <div className="text-3xl   font-[600] mb-2">60+</div>
+                                    <div className="text-3xl   font-[600] mb-2">6+</div>
                                     <div className="text-blue-200 text-sm">Years of Excellence</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-3xl   font-[600] mb-2">500+</div>
-                                    <div className="text-blue-200 text-sm">Service Centers</div>
+                                    <div className="text-3xl   font-[600] mb-2">90%</div>
+                                    <div className="text-blue-200 text-sm">return customer ratio</div>
                                 </div>
                                 <div className="text-center">
                                     <div className="text-3xl   font-[600] mb-2">24/7</div>
                                     <div className="text-blue-200 text-sm">Customer Support</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-3xl   font-[600] mb-2">10M+</div>
+                                    <div className="text-3xl   font-[600] mb-2">2M+</div>
                                     <div className="text-blue-200 text-sm">Happy Customers</div>
                                 </div>
                             </div>
@@ -262,7 +262,7 @@ const handleInputChange = (e, fieldName = null) => {
                                                 <h3 className="text-xl   font-[600] text-gray-800 mb-">Head Office</h3>
                                                 <p className="text-gray-600 mb-2 text-[12px]">Visit our corporate headquarters</p>
                                                 <p className=" text-[#025da8]   font-[500] text-[13px] ">
-                                                    Plot No:40-41, Sub Plot : C/D/E, Power Industrial, Near Kothariya <br />  Railway Station, Dhebar Road, Kothariya Solvant, Rajkot, Gujarat-360002
+                                                    J K industrial park, Plot no :38-39, mavdi-lodhika Road, <br />  behind surbhi industrial zone, Taravada, Gujarat 360004
                                                 </p>
                                             </div>
                                         </div>

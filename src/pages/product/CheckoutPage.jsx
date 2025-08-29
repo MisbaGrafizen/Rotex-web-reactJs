@@ -133,7 +133,7 @@
 //     };
 //     const calculateTotal = () => calculateSubtotal() + shipping - calculateDiscount();
 
-    
+
 //     const subtotal = calculateSubtotal();
 //     const discount = calculateDiscount();
 //     const total = calculateTotal();

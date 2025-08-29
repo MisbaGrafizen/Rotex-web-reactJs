@@ -113,7 +113,7 @@ export default function Herosection() {
 
   return (
     <section
-      className="relative w-full overflow-hidden"
+      className="relative w-full x] overflow-hidden"
       onMouseEnter={stop}
       onMouseLeave={start}
       onTouchStart={onTouchStart}
@@ -146,7 +146,7 @@ export default function Herosection() {
               <img
                 src={slide.mobile || slide.image}
                 alt={`Slide ${i}`}
-                className="w-full h-full object-cover object-top"
+                className="w-full h-full object-left object-cover object-top"
                 draggable={false}
                 loading={i === 1 ? "eager" : "lazy"}
               />

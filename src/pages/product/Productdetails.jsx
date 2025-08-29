@@ -372,6 +372,7 @@ export default function Productdetails() {
   const nameFromState = location?.state?.name ?? "";
   const idOrSlug = idFromState || idOrSlugParam;
 
+
   // --- UI state ---
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
@@ -439,6 +440,9 @@ export default function Productdetails() {
       mounted = false;
     };
   }, [idOrSlug]);
+  
+
+  console.log('prdddcccoduct', product)
 
   // -------- helpers --------
   const px = (n) => (typeof n === "number" ? n.toLocaleString("en-IN") : n ?? "");

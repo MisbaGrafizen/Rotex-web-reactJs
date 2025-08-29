@@ -415,11 +415,16 @@ const onCardClick = (product) => {
                                   />
                                   {offPct > 0 && (
                                     <div className="absolute top-4 right-4">
-                                      <span className="bg-[#025da8] text-white text-[12px] font-[500] px-2 py-1 rounded-full">
+                                      <span className="bg-[#025da8] text-white text-[10px] font-[500] px-2 py-1 rounded-full">
                                         {offPct}% OFF
                                       </span>
                                     </div>
                                   )}
+                                     {/* <div className="absolute  top-4 right-2">
+                                      <span className="bg-[#fd0800] border-[#f00] border-[1.3px]  text-white text-[10px] font-[500] px-4 py-1  rounded-[7px]">
+                                   Sale
+                                      </span>
+                                    </div> */}
                                 </div>
 
                                 <div className="px-5 bg-[#fafafa] h-full pt-[10px]">

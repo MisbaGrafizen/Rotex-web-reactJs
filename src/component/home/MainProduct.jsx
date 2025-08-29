@@ -662,13 +662,13 @@ export default function MainProduct() {
     const dest = product?.title
       ? `/product-details/${product.title}`
       : product?._id
-        ? `/product-details/${product._id}`
+        ? `/product-details/${product.id}`
         : null;
 
     if (dest) {
       navigate(dest, {
         state: {
-          id: product._id,
+          id: product.id,
           title: product.title
         }
       });

@@ -359,7 +359,7 @@ function BannerCard({ src, alt, className = "" }) {
       <img
         src={src}
         alt={alt}
-        className="absolute flex-shrink-0 inset-0 h-full w-full object-cover"
+        className="absolute flex-shrink-0 inset-0 h-full w-full object-top object-cover"
         loading="lazy"
         onLoad={(e) => {
           const img = e.currentTarget;
@@ -440,7 +440,7 @@ export default function Discover() {
                 key={i}
                 src={item.src}
                 alt={item.alt}
-                className="w-full md:w-1/3 md11:h-[200px]"
+                className="w-full md:w-1/3 object-top md11:h-[200px]"
               />
             ) : (
               <div key={i} className="w-full md:w-1/3 bg-gray-100 h-[200px] rounded-xl" />
@@ -455,7 +455,7 @@ export default function Discover() {
                 key={i}
                 src={item.src}
                 alt={item.alt}
-                className="w-full md:w-1/3 md11:h-[200px]"
+                className="w-full md:w-1/3 object-top md11:h-[200px]"
               />
             ) : (
               <div key={i} className="w-full md:w-1/3 bg-gray-100 h-[200px] rounded-xl" />
